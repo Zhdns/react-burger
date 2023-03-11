@@ -1,7 +1,8 @@
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, LockIcon, DragIcon, DeleteIcon, ConstructorElement, Button} from '@ya.praktikum/react-developer-burger-ui-components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from './BurgerConstructor.module.css'
 import { data } from '../../utils/data.js'
+import PropTypes from 'prop-types';
 
 
 function Cart(props){
@@ -22,17 +23,8 @@ function Ingredients(props) {
 
 function Total(props) {
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            margin: '40px 12px 0 0'
-        }}>
-            <div style={{
-                display: 'flex',
-                gap: '10px',
-                alignItems: 'center'
-            }} className='mr-10'>
+        <div className={style.total}>
+            <div className={`${style.totalPrice} mr-10`}>
                 <p className='text text_type_main-large'>{props.price}</p>
                 <CurrencyIcon type='primary'/>
             </div>
@@ -48,94 +40,76 @@ function Total(props) {
 
 
 
-class BurgerConstructor extends React.Component {
+function BurgerConstructor() {
 
-    state = {
-        bun: [],
-        main: [],
-        sauce: [],
-        totalPrice: 0,
-    }
+    
+    const [bun, setBun] = React.useState([])
+    const [main, setMain] = React.useState([]);
+    const [sauce, setSauce] = React.useState([]);
+    const [totalPrice, setTotalPrice] = React.useState(0)
 
-    componentDidMount() {
+    useEffect(() => {
         const bun = data.filter(item => item.type === 'bun').slice(0,1)
         const main = data.filter(item => item.type === 'main')
         const sauce = data.filter(item => item.type === 'sauce')
         const totalPrice = [...bun, ...sauce, ...main].reduce((sum, item) => sum + item.price, 0)
-        this.setState({bun, main, sauce, totalPrice})
-}
-
-    render() {
-
-        const {bun, main, sauce, totalPrice} = this.state
+        setBun(bun)
+        setMain(main)
+        setSauce(sauce)
+        setTotalPrice(totalPrice)
+}, [])
 
 
         return (
             <div style={{margin: '0'}}>
             <Cart>
                 {bun && bun.map(item => (
-                    <li style={{
-                        maxHeight: '80px',
-                        margin:' 0 0 0 72px',
-                        paddingRight: '12px'
-                    }}> 
+                    <li className={style.bun} key={item._id}> 
                     <ConstructorElement
+                    key={item._id}
                     type="top"
                     isLocked={true}
                     text={item.name + '(верх)'}
                     price={item.price}
                     thumbnail={item.image}
-                    key={item._id}/>
+                    alt={item.name}/>
                     </li>
                     
                 ))}
                 <Ingredients>
                     {main && main.map(item =>(
-                        <li style={{
-                            display: 'flex',
-                            listStyleType: 'none',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                        }}>
+                        <li className={style.main} key={item._id}>
                         <DragIcon type='primary'/>
                         <ConstructorElement
+                        key={item._id}
                         text={item.name}
                         price={item.price}
                         thumbnail={item.image}
-                        key={item._id}/>
+                        alt={item.name}/>
                         </li>
                     ))}
                     {sauce && sauce.map(item => (
-                        <li style={{
-                            display: 'flex',
-                            listStyleType: 'none',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                        }}>
+                        <li className={style.main} key={item._id}>
                         <DragIcon type='primary'/>
                         <ConstructorElement
+                        key={item._id}
                         text={item.name}
                         price={item.price}
                         thumbnail={item.image}
-                        key={item._id}/>
+                        alt={item.name}/>
                         </li>
                     ))}
                 </Ingredients>
                 {bun && bun.map(item => (
-                    <li style={{
-                        maxHeight: '80px',
-                        margin:' 0 0 0 72px',
-                        paddingRight: '12px'
-                    }}> 
+                    <li className={style.bun} key={item._id}>  
                     <ConstructorElement
+                    key={item._id}
                     type="bottom"
                     isLocked={true}
                     text={item.name + '(низ)'}
                     price={item.price}
                     thumbnail={item.image}
-                    key={item._id}/>
+                    alt={item.name}/>
                     </li>
                     
                 ))}
@@ -144,6 +118,34 @@ class BurgerConstructor extends React.Component {
             </div>
         )
     }
-}
+
+    BurgerConstructor.propTypes = {
+        totalPrice: PropTypes.number,
+
+        bun: PropTypes.arrayOf(PropTypes.shape({
+            _id: PropTypes.string,
+            image: PropTypes.string,
+            price: PropTypes.number,
+            name: PropTypes.string,
+            type: PropTypes.string,
+        })),
+        
+        main: PropTypes.arrayOf(PropTypes.shape({
+            _id: PropTypes.string,
+            image: PropTypes.string,
+            price: PropTypes.number,
+            name: PropTypes.string,
+            type: PropTypes.string,
+        })),
+    
+        sauce: PropTypes.arrayOf(PropTypes.shape({
+            _id: PropTypes.string,
+            image: PropTypes.string,
+            price: PropTypes.number,
+            name: PropTypes.string,
+            type: PropTypes.string,
+        })),
+
+    }
 
 export default BurgerConstructor

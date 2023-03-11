@@ -1,8 +1,9 @@
 import { type } from '@testing-library/user-event/dist/type'
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, Tab, Counter} from '@ya.praktikum/react-developer-burger-ui-components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from './BurgerIngredients.module.css'
 import { data } from '../../utils/data.js'
+import PropTypes from 'prop-types';
 
 
 
@@ -42,7 +43,7 @@ function Product(props) {
         <div className={style.counter}>
         <Counter count={1} size="default" />
         </div>
-        <img className={style.productImage} src={props.image}></img>
+        <img className={style.productImage} src={props.image} alt={props.alt}></img>
         <div className={`${style.productPrice} text text_type_main-medium`}>
             <span className={style.price}>{props.price}</span>
             <CurrencyIcon type='primary'></CurrencyIcon>
@@ -53,48 +54,37 @@ function Product(props) {
 }
 
 
-class BurgerIngredients extends React.Component {
+function BurgerIngredients() {
+    const [current, setCurrent] = React.useState('Булки');
+    const [bun, setBun] = React.useState([]);
+    const [main, setMain] = React.useState([]);
+    const [sauce, setSauce] = React.useState([]);
     
-        state = {
-            current:'Булки',
-            bun: [],
-            main: [],
-            sauce: [],
-        } 
-    
-
-    
-    componentDidMount() {
+    useEffect(() => {
                 const bun = data.filter(item => item.type === 'bun')
                 const main = data.filter(item => item.type === 'main')
                 const sauce = data.filter(item => item.type === 'sauce')
-                this.setState({bun, main, sauce})
+                setBun(bun)
+                setMain(main)
+                setSauce(sauce)
+                
+    }, [])
+
+    const handleTabClick = (value) => { 
+        setCurrent(value);
     }
 
-    setCurrent = (value) => { 
-        this.setState({ current: value });
-    }
-
-    render() {
-        const {bun, main, sauce} = this.state
-    
     return(
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            width: '600px',
-            margin: ' 0 auto',
-        }}>
+        <div className={style.main}>
             <Title text="Соберите бургер"/>
             <div style={{ display: 'flex', marginBottom: '40px'}}>
-                <Tab value="Булки" active={this.state.current === 'Булки'} onClick={this.setCurrent}>
+                <Tab value="Булки" active={current === 'Булки'} onClick={() => handleTabClick('Булки')}>
                     Булки
                 </Tab>
-                <Tab value="Соусы" active={this.state.current === 'Соусы'} onClick={this.setCurrent}>
+                <Tab value="Соусы" active={current === 'Соусы'} onClick={() => handleTabClick('Соусы')}>
                     Соусы
                 </Tab>
-                <Tab value="Начинки" active={this.state.current === 'Начинки'} onClick={this.setCurrent}>
+                <Tab value="Начинки" active={current === 'Начинки'} onClick={() => handleTabClick('Начинки')}>
                     Начинки
                 </Tab>
             </div>
@@ -102,25 +92,54 @@ class BurgerIngredients extends React.Component {
                 <SecondTitle text="Булки"/>
                 <List>
                     {bun && bun.map(item => (
-                        <Product key={item._id}  image={item.image} price={item.price} name={item.name}/>
+                        <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
                     ))}
                 </List>
                 <SecondTitle text="Соусы"/>
                 <List>
                     {sauce && sauce.map(item => (
-                        <Product key={item._id}  image={item.image} price={item.price} name={item.name}/>
+                        <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
                     ))}
                 </List>
                 <SecondTitle text="Начинки"/>
                 <List>
                 {main && main.map(item => (
-                    <Product key={item._id}  image={item.image} price={item.price} name={item.name}/>
+                    <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
                 ))}
                 </List>
             </ScrollBarBlock>
         </div>
     )
 }
+
+BurgerIngredients.propTypes = {
+    handleTabClick: PropTypes.func,
+    
+    current: PropTypes.string,
+    
+    bun: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string,
+        image: PropTypes.string,
+        price: PropTypes.number,
+        name: PropTypes.string,
+        type: PropTypes.string,
+    })),
+    
+    main: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string,
+        image: PropTypes.string,
+        price: PropTypes.number,
+        name: PropTypes.string,
+        type: PropTypes.string,
+    })),
+
+    sauce: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string,
+        image: PropTypes.string,
+        price: PropTypes.number,
+        name: PropTypes.string,
+        type: PropTypes.string,
+    })),
 }
 
 export default BurgerIngredients 

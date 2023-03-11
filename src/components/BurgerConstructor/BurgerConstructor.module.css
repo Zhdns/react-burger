@@ -59,3 +59,29 @@
     margin: auto 20px auto 0;
 }
 
+.total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 40px 12px 0 0;
+}
+
+.totalPrice {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.bun {
+    max-height: 80px;
+    margin: 0 0 0 72px;
+    padding-right: 12px;
+}
+
+.main {
+    display: flex;
+    list-style-type: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
