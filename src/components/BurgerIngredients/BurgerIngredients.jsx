@@ -2,8 +2,9 @@ import { type } from '@testing-library/user-event/dist/type'
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, Tab, Counter} from '@ya.praktikum/react-developer-burger-ui-components'
 import React, { useEffect } from 'react'
 import style from './BurgerIngredients.module.css'
-import { data } from '../../utils/data.js'
 import PropTypes from 'prop-types';
+import IngredientsDetails from '../IngredientDetails/IngredientDetails.jsx';
+import { bunType, mainType, sauceType } from '../../utils/types.js'
 
 
 
@@ -39,13 +40,13 @@ function List(props) {
 
 function Product(props) {
     return (
-    <li className={style.product} >
+    <li className={style.product} onClick={() => props.onIngredientClick(props)} >
         <div className={style.counter}>
         <Counter count={1} size="default" />
         </div>
         <img className={style.productImage} src={props.image} alt={props.alt}></img>
         <div className={`${style.productPrice} text text_type_main-medium`}>
-            <span className={style.price}>{props.price}</span>
+            <span className={`${style.price} text_type_digits-default`}>{props.price}</span>
             <CurrencyIcon type='primary'></CurrencyIcon>
         </div>
         <p className={`${style.productName} text text_type_main-default`}>{props.name}</p>
@@ -54,11 +55,13 @@ function Product(props) {
 }
 
 
-function BurgerIngredients() {
+function BurgerIngredients({data}) {
     const [current, setCurrent] = React.useState('Булки');
     const [bun, setBun] = React.useState([]);
     const [main, setMain] = React.useState([]);
     const [sauce, setSauce] = React.useState([]);
+    const [isOpen, setIsOpen] =React.useState(false)
+    const [selectedIngredient, setSelectedIngredient] = React.useState(null)
     
     useEffect(() => {
                 const bun = data.filter(item => item.type === 'bun')
@@ -68,10 +71,15 @@ function BurgerIngredients() {
                 setMain(main)
                 setSauce(sauce)
                 
-    }, [])
+    }, [ data])
 
     const handleTabClick = (value) => { 
         setCurrent(value);
+    }
+
+    const togglePopup = (ingridient) => {
+        setSelectedIngredient(ingridient)
+        setIsOpen(true)
     }
 
     return(
@@ -92,54 +100,63 @@ function BurgerIngredients() {
                 <SecondTitle text="Булки"/>
                 <List>
                     {bun && bun.map(item => (
-                        <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
+                        <Product key={item._id}  
+                        image={item.image} 
+                        price={item.price} 
+                        name={item.name} 
+                        alt={item.name} 
+                        calories={item.calories}
+                        proteins={item.proteins}
+                        fat={item.fat}
+                        carbohydrates={item.carbohydrates}
+                        onIngredientClick={togglePopup}/>
                     ))}
                 </List>
                 <SecondTitle text="Соусы"/>
                 <List>
                     {sauce && sauce.map(item => (
-                        <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
+                        <Product key={item._id}  
+                        image={item.image} 
+                        price={item.price} 
+                        name={item.name} 
+                        alt={item.name}
+                        calories={item.calories}
+                        proteins={item.proteins}
+                        fat={item.fat}
+                        carbohydrates={item.carbohydrates}
+                        onIngredientClick={togglePopup}/>
                     ))}
                 </List>
                 <SecondTitle text="Начинки"/>
                 <List>
                 {main && main.map(item => (
-                    <Product key={item._id}  image={item.image} price={item.price} name={item.name} alt={item.name}/>
+                    <Product key={item._id}  
+                    image={item.image} 
+                    price={item.price} 
+                    name={item.name} 
+                    alt={item.name} 
+                    calories={item.calories}
+                    proteins={item.proteins}
+                    fat={item.fat}
+                    carbohydrates={item.carbohydrates}
+                    onIngredientClick={togglePopup}/>
                 ))}
                 </List>
             </ScrollBarBlock>
+            <IngredientsDetails 
+            ingredient={selectedIngredient} 
+            isOpen={isOpen}
+            isCLose={() => setIsOpen(false)}/>
         </div>
     )
 }
 
 BurgerIngredients.propTypes = {
     handleTabClick: PropTypes.func,
-    
     current: PropTypes.string,
-    
-    bun: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        image: PropTypes.string,
-        price: PropTypes.number,
-        name: PropTypes.string,
-        type: PropTypes.string,
-    })),
-    
-    main: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        image: PropTypes.string,
-        price: PropTypes.number,
-        name: PropTypes.string,
-        type: PropTypes.string,
-    })),
-
-    sauce: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-        image: PropTypes.string,
-        price: PropTypes.number,
-        name: PropTypes.string,
-        type: PropTypes.string,
-    })),
+    bun: bunType,
+    main: mainType,
+    sauce: sauceType,
 }
 
 export default BurgerIngredients 
