@@ -13,13 +13,16 @@ function App() {
     const fetchData = useCallback (async() => {
       try { 
         const response = await fetch(url);
-        const result = await response.json();
-        setData(result.data);
-      }
-      catch(error) {
+        if (response.ok) {
+          const result = await response.json();
+          setData(result.data);
+        } else {
+          throw new Error(`Ошибка: ${response.statusText}`);
+        }
+      } catch (error) {
         console.log(error);
       }
-    }, [])
+    }, []);
     
     useEffect(() => {
       fetchData()

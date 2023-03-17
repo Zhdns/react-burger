@@ -1,30 +1,32 @@
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, Tab, Counter, CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components'
-import React, { useEffect } from 'react'
+import React, { Children, useEffect } from 'react'
 import ModalOverlay from '../ModalOverlay/ModalOverlay.jsx'
 import style from './Modal.module.css'
 import PropTypes from 'prop-types';
 
-function Modal({main, title, isOpen, isClose}) {
+function Modal({title, onClose, children, handleClose}) {
+
+    
 
 
     return (
-        <ModalOverlay isOpen={isOpen} isClose={isClose}>
+        <ModalOverlay onClose={onClose} onClick={handleClose}>
             <div className={style.modal}>
                 <div className={style.modalTop}>
                     {title && <h2 className={`${style.title} text text_type_main-large`}>{title}</h2>}
-                    <CloseIcon type="primary" onClick={isClose}/>
+                    <CloseIcon type="primary" onClick={handleClose}/>
                 </div>
-                {main}
+                {children}
             </div>
         </ModalOverlay>
     )
 }
 
 Modal.propTypes = {
-    main: PropTypes.node,
+    children: PropTypes.node.isRequired,
     title: PropTypes.string,
-    isOpen: PropTypes.bool,
-    isClose: PropTypes.func,
+    onClose: PropTypes.bool.isRequired,
+    handleClose: PropTypes.func,
 };
 
 

@@ -4,7 +4,9 @@ import React, { useEffect } from 'react'
 import style from './BurgerIngredients.module.css'
 import PropTypes from 'prop-types';
 import IngredientsDetails from '../IngredientDetails/IngredientDetails.jsx';
-import { bunType, mainType, sauceType } from '../../utils/types.js'
+import { ingredientType} from '../../utils/types.js'
+import Modal from '../Modal/Modal.jsx';
+import { dataType } from '../../utils/types.js';
 
 
 
@@ -60,7 +62,7 @@ function BurgerIngredients({data}) {
     const [bun, setBun] = React.useState([]);
     const [main, setMain] = React.useState([]);
     const [sauce, setSauce] = React.useState([]);
-    const [isOpen, setIsOpen] =React.useState(false)
+    const [onClose, setOnClose] =React.useState(true)
     const [selectedIngredient, setSelectedIngredient] = React.useState(null)
     
     useEffect(() => {
@@ -79,7 +81,7 @@ function BurgerIngredients({data}) {
 
     const togglePopup = (ingridient) => {
         setSelectedIngredient(ingridient)
-        setIsOpen(true)
+        setOnClose(false)
     }
 
     return(
@@ -143,20 +145,15 @@ function BurgerIngredients({data}) {
                 ))}
                 </List>
             </ScrollBarBlock>
-            <IngredientsDetails 
-            ingredient={selectedIngredient} 
-            isOpen={isOpen}
-            isCLose={() => setIsOpen(false)}/>
+            <Modal title={'Детали ингредиента'} onClose={onClose} handleClose={()=>setOnClose(true)}>
+                <IngredientsDetails ingredient={selectedIngredient}/>
+            </Modal>
         </div>
     )
 }
 
 BurgerIngredients.propTypes = {
-    handleTabClick: PropTypes.func,
-    current: PropTypes.string,
-    bun: bunType,
-    main: mainType,
-    sauce: sauceType,
+    data: dataType,
 }
 
 export default BurgerIngredients 

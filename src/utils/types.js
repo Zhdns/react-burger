@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export const bunType = PropTypes.arrayOf(PropTypes.shape({
+export const ingredientType = PropTypes.arrayOf(PropTypes.shape({
   _id: PropTypes.string,
   image: PropTypes.string,
   price: PropTypes.number,
@@ -8,18 +8,21 @@ export const bunType = PropTypes.arrayOf(PropTypes.shape({
   type: PropTypes.string,
 }));
 
-export const mainType = PropTypes.arrayOf(PropTypes.shape({
-  _id: PropTypes.string,
-  image: PropTypes.string,
-  price: PropTypes.number,
-  name: PropTypes.string,
-  type: PropTypes.string,
-}));
 
-export const sauceType = PropTypes.arrayOf(PropTypes.shape({
-  _id: PropTypes.string,
-  image: PropTypes.string,
-  price: PropTypes.number,
-  name: PropTypes.string,
-  type: PropTypes.string,
-}));
+export const dataType = PropTypes.arrayOf(
+    PropTypes.shape({
+        calories: PropTypes.number,
+        carbohydrates: PropTypes.number,
+        fat: PropTypes.number,
+        image: PropTypes.string,
+        image_large: PropTypes.string,
+        image_mobile: PropTypes.string,
+        name: PropTypes.string,
+        price: PropTypes.number,
+        proteins: PropTypes.number,
+        type: PropTypes.oneOf(['bun', 'main', 'sauce']),
+        __v: PropTypes.number,
+        _id: PropTypes.string,
+    })
+)
+

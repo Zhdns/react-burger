@@ -4,7 +4,7 @@ import Modal from '../Modal/Modal.jsx'
 import style from './IngredientsDetails.module.css'
 import PropTypes from 'prop-types';
 
-const IngredientsDetails = ({ingredient, isOpen, isCLose}) => {
+const IngredientsDetails = ({ingredient}) => {
 
     if (!ingredient) {
         return null;
@@ -12,9 +12,7 @@ const IngredientsDetails = ({ingredient, isOpen, isCLose}) => {
 
     const {image, name ,calories, proteins, fat, carbohydrates} = ingredient
 
-
-
-    const main = (
+    return (
         <div className={style.main}>
             <img src={image} className={style.img} alt={name}/>
             <h3 className={`${style.title} text text_type_main-medium mb-8`}>{name}</h3>
@@ -38,10 +36,6 @@ const IngredientsDetails = ({ingredient, isOpen, isCLose}) => {
             </div>
         </div>
     )
-
-    return (
-        <Modal title='Детали ингредиента' main={main}  isOpen={isOpen} isClose={isCLose}/>
-    )
 }
 
 IngredientsDetails.propTypes = {
@@ -55,8 +49,6 @@ IngredientsDetails.propTypes = {
         carbohydrates: PropTypes.number,
     }),
 
-    isOpen: PropTypes.bool,
-    isCLose: PropTypes.func,
 };
 
 

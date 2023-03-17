@@ -4,23 +4,40 @@ import ReactDOM from 'react-dom';
 import style  from './ModalOverlay.module.css';
 import PropTypes from 'prop-types';
 
-const ModalOverlay = ({children, isOpen, isClose}) => {
+
+
+const ModalOverlay = ({children, onClose, onClick}) => {
     const modalRoot = document.getElementById('modal')
-    const modalStyle = {
-        opacity: isOpen ? 1 : 0,
-        visibility: isOpen ? 'visible' : 'hidden',
-    };
+
+    const [modalStyle, setModalStyle] = React.useState({
+        opacity: 1,
+        visibility: 'visible',
+    });
+    
+    React.useEffect(() => {
+        if (onClose === false) {
+            setModalStyle({
+                opacity: 1,
+                visibility: 'visible',
+            });
+        } else {
+            setModalStyle({
+                opacity: 0,
+                visibility: 'hidden',
+            });
+        }
+    }, [onClose]);
 
 
     const clickOverlayClose = (e) => {
         if(e.target === e.currentTarget) {
-            isClose()
+            onClick()
         }
     }
 
     const escClose = (e) => {
-        if(e.key === 'Escape') {
-            isClose()
+        if(e.key === 'Escape' ) {
+            onClick()
         }
     }
 
@@ -31,6 +48,8 @@ const ModalOverlay = ({children, isOpen, isClose}) => {
             }
     }, [])
 
+    
+
     return ReactDOM.createPortal(
         <div className={`${style.modalOverlay}`} style={modalStyle} onClick={clickOverlayClose}>
             {children}
@@ -40,9 +59,9 @@ const ModalOverlay = ({children, isOpen, isClose}) => {
 }
 
 ModalOverlay.propTypes = {
-    children: PropTypes.node,
-    isOpen: PropTypes.bool,
-    isClose: PropTypes.func,
+    children: PropTypes.node.isRequired,
+    onClose: PropTypes.bool.isRequired,
+    onClick: PropTypes.func,
 };
 
 export default ModalOverlay
