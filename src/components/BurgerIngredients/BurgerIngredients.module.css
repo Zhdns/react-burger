@@ -86,3 +86,9 @@
     top: 0;
     right: 0;
 }
+
+
+.tabs {
+    display: flex;
+    margin-bottom: 40px;
+}

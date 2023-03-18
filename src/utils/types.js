@@ -1,15 +1,7 @@
 import PropTypes from 'prop-types';
 
-export const ingredientType = PropTypes.arrayOf(PropTypes.shape({
-  _id: PropTypes.string,
-  image: PropTypes.string,
-  price: PropTypes.number,
-  name: PropTypes.string,
-  type: PropTypes.string,
-}));
 
-
-export const dataType = PropTypes.arrayOf(
+export const ingredientType = 
     PropTypes.shape({
         calories: PropTypes.number,
         carbohydrates: PropTypes.number,
@@ -24,5 +16,4 @@ export const dataType = PropTypes.arrayOf(
         __v: PropTypes.number,
         _id: PropTypes.string,
     })
-)
 

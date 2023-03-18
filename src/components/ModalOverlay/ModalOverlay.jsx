@@ -6,27 +6,8 @@ import PropTypes from 'prop-types';
 
 
 
-const ModalOverlay = ({children, onClose, onClick}) => {
+const ModalOverlay = ({children, onClick}) => {
     const modalRoot = document.getElementById('modal')
-
-    const [modalStyle, setModalStyle] = React.useState({
-        opacity: 1,
-        visibility: 'visible',
-    });
-    
-    React.useEffect(() => {
-        if (onClose === false) {
-            setModalStyle({
-                opacity: 1,
-                visibility: 'visible',
-            });
-        } else {
-            setModalStyle({
-                opacity: 0,
-                visibility: 'hidden',
-            });
-        }
-    }, [onClose]);
 
 
     const clickOverlayClose = (e) => {
@@ -51,7 +32,7 @@ const ModalOverlay = ({children, onClose, onClick}) => {
     
 
     return ReactDOM.createPortal(
-        <div className={`${style.modalOverlay}`} style={modalStyle} onClick={clickOverlayClose}>
+        <div className={`${style.modalOverlay}`} onClick={clickOverlayClose}>
             {children}
         </div>,
         modalRoot
@@ -60,7 +41,6 @@ const ModalOverlay = ({children, onClose, onClick}) => {
 
 ModalOverlay.propTypes = {
     children: PropTypes.node.isRequired,
-    onClose: PropTypes.bool.isRequired,
     onClick: PropTypes.func,
 };
 

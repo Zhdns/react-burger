@@ -3,7 +3,7 @@
     import style from './BurgerConstructor.module.css'
     import PropTypes from 'prop-types';
     import OrderDetails from '../OrderDetails/OrderDetails.jsx'
-    import { dataType } from '../../utils/types.js'
+    import { ingredientType } from '../../utils/types.js';
     import Modal from '../Modal/Modal.jsx';
 
 
@@ -50,7 +50,7 @@
         const [main, setMain] = React.useState([]);
         const [sauce, setSauce] = React.useState([]);
         const [totalPrice, setTotalPrice] = React.useState(0)
-        const [onClose, setOnClose] =React.useState(true)
+        const [onOpen, setOnOpen] =React.useState(false)
         const [orderNumber, setOrderNumber] = React.useState(1)
 
 
@@ -69,11 +69,11 @@
 
     const togglePopup = () => {
         setOrderNumber(prev => prev + 1)
-        setOnClose(false)
+        setOnOpen(true)
     }
 
             return (
-                <div style={{margin: '0'}}>
+                <div className={style.shell}>
                 <Cart>
                     {bun && bun.map(item => (
                         <li className={style.bun} key={item._id}> 
@@ -123,15 +123,15 @@
                     ))}
                 </Cart>
                 <Total price={totalPrice} onClick={togglePopup}/>
-                <Modal onClose={onClose} handleClose={()=>setOnClose(true)}>
+                {onOpen && <Modal  handleClose={()=>setOnOpen(false)}>
                     <OrderDetails orderNumber={orderNumber}/>
-                </Modal>
+                </Modal>}
                 </div>
             )
         }
 
         BurgerConstructor.propTypes = {
-            data: dataType,
+            data: PropTypes.arrayOf(ingredientType),
         }
 
     export default BurgerConstructor

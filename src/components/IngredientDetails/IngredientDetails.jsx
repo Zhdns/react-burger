@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import Modal from '../Modal/Modal.jsx'
 import style from './IngredientsDetails.module.css'
 import PropTypes from 'prop-types';
+import { ingredientType } from '../../utils/types.js';
 
 const IngredientsDetails = ({ingredient}) => {
 
@@ -39,16 +40,7 @@ const IngredientsDetails = ({ingredient}) => {
 }
 
 IngredientsDetails.propTypes = {
-    ingredient: PropTypes.shape({
-        image: PropTypes.string,
-        price: PropTypes.number,
-        name: PropTypes.string,
-        calories: PropTypes.number,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-    }),
-
+    ingredient: ingredientType,
 };
 
 

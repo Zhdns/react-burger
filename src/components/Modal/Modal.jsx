@@ -4,13 +4,13 @@ import ModalOverlay from '../ModalOverlay/ModalOverlay.jsx'
 import style from './Modal.module.css'
 import PropTypes from 'prop-types';
 
-function Modal({title, onClose, children, handleClose}) {
+function Modal({title, children, handleClose}) {
 
     
 
 
     return (
-        <ModalOverlay onClose={onClose} onClick={handleClose}>
+        <ModalOverlay  onClick={handleClose}>
             <div className={style.modal}>
                 <div className={style.modalTop}>
                     {title && <h2 className={`${style.title} text text_type_main-large`}>{title}</h2>}
@@ -25,7 +25,6 @@ function Modal({title, onClose, children, handleClose}) {
 Modal.propTypes = {
     children: PropTypes.node.isRequired,
     title: PropTypes.string,
-    onClose: PropTypes.bool.isRequired,
     handleClose: PropTypes.func,
 };
 

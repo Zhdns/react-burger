@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import IngredientsDetails from '../IngredientDetails/IngredientDetails.jsx';
 import { ingredientType} from '../../utils/types.js'
 import Modal from '../Modal/Modal.jsx';
-import { dataType } from '../../utils/types.js';
 
 
 
@@ -62,7 +61,7 @@ function BurgerIngredients({data}) {
     const [bun, setBun] = React.useState([]);
     const [main, setMain] = React.useState([]);
     const [sauce, setSauce] = React.useState([]);
-    const [onClose, setOnClose] =React.useState(true)
+    const [onOpen, setOnOpen] =React.useState(false)
     const [selectedIngredient, setSelectedIngredient] = React.useState(null)
     
     useEffect(() => {
@@ -81,13 +80,13 @@ function BurgerIngredients({data}) {
 
     const togglePopup = (ingridient) => {
         setSelectedIngredient(ingridient)
-        setOnClose(false)
+        setOnOpen(true)
     }
 
     return(
         <div className={style.main}>
             <Title text="Соберите бургер"/>
-            <div style={{ display: 'flex', marginBottom: '40px'}}>
+            <div className={style.tabs}>
                 <Tab value="Булки" active={current === 'Булки'} onClick={() => handleTabClick('Булки')}>
                     Булки
                 </Tab>
@@ -145,15 +144,15 @@ function BurgerIngredients({data}) {
                 ))}
                 </List>
             </ScrollBarBlock>
-            <Modal title={'Детали ингредиента'} onClose={onClose} handleClose={()=>setOnClose(true)}>
+            { onOpen && <Modal title={'Детали ингредиента'}  handleClose={()=>setOnOpen(false)}>
                 <IngredientsDetails ingredient={selectedIngredient}/>
-            </Modal>
+            </Modal>}
         </div>
     )
 }
 
 BurgerIngredients.propTypes = {
-    data: dataType,
+    data: PropTypes.arrayOf(ingredientType),
 }
 
 export default BurgerIngredients 
