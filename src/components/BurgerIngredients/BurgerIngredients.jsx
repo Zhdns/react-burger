@@ -1,12 +1,12 @@
 import { type } from '@testing-library/user-event/dist/type'
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, Tab, Counter} from '@ya.praktikum/react-developer-burger-ui-components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext} from 'react'
 import style from './BurgerIngredients.module.css'
 import PropTypes from 'prop-types';
 import IngredientsDetails from '../IngredientDetails/IngredientDetails.jsx';
 import { ingredientType} from '../../utils/types.js'
 import Modal from '../Modal/Modal.jsx';
-
+import {CartContext} from '../App/App.jsx'
 
 
 
@@ -63,6 +63,8 @@ function BurgerIngredients({data}) {
     const [sauce, setSauce] = React.useState([]);
     const [onOpen, setOnOpen] =React.useState(false)
     const [selectedIngredient, setSelectedIngredient] = React.useState(null)
+
+    const {addItem} = useContext(CartContext)
     
     useEffect(() => {
                 const bun = data.filter(item => item.type === 'bun')
@@ -81,7 +83,12 @@ function BurgerIngredients({data}) {
     const togglePopup = (ingridient) => {
         setSelectedIngredient(ingridient)
         setOnOpen(true)
+        
     }
+
+    const handleIngredientClick = (ingredient) => {
+        addItem(ingredient);
+    };
 
     return(
         <div className={style.main}>
@@ -110,7 +117,10 @@ function BurgerIngredients({data}) {
                         proteins={item.proteins}
                         fat={item.fat}
                         carbohydrates={item.carbohydrates}
-                        onIngredientClick={togglePopup}/>
+                        onIngredientClick={() => {
+                            togglePopup(item)
+                            handleIngredientClick(item)
+                        }}/>
                     ))}
                 </List>
                 <SecondTitle text="Соусы"/>
@@ -125,7 +135,10 @@ function BurgerIngredients({data}) {
                         proteins={item.proteins}
                         fat={item.fat}
                         carbohydrates={item.carbohydrates}
-                        onIngredientClick={togglePopup}/>
+                        onIngredientClick={() => {
+                            togglePopup(item)
+                            handleIngredientClick(item)
+                        }}/>
                     ))}
                 </List>
                 <SecondTitle text="Начинки"/>
@@ -140,7 +153,10 @@ function BurgerIngredients({data}) {
                     proteins={item.proteins}
                     fat={item.fat}
                     carbohydrates={item.carbohydrates}
-                    onIngredientClick={togglePopup}/>
+                    onIngredientClick={() => {
+                        togglePopup(item)
+                        handleIngredientClick(item)
+                    }}/>
                 ))}
                 </List>
             </ScrollBarBlock>

@@ -5,10 +5,25 @@ import BurgerIngredients from '../BurgerIngredients/BurgerIngredients.jsx';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 const url = 'https://norma.nomoreparties.space/api/ingredients'
 
+
+export const CartContext = React.createContext({
+    cartItems: [], 
+    addItem: (item) => {},
+})
+
 function App() {
 
   const [data, setData] = useState([]);
+  const [cartItems, setCartItems] = useState([])
+
+  const addItem = (item) => {
+    setCartItems((prevItems) => [...prevItems, item])
+    console.log(item)
+  }
   
+  const contextValue = useMemo(() => {
+    return {cartItems, addItem}
+  }, [cartItems])
   
     const fetchData = useCallback (async() => {
       try { 
@@ -33,6 +48,7 @@ function App() {
   
 
   return (
+    <CartContext.Provider value={contextValue}>
     <div>
       <AppHeader/>
       <div className={Style.burgerConstructor}>
@@ -40,6 +56,7 @@ function App() {
         <BurgerConstructor data={data}/>
       </div>
     </div>
+    </CartContext.Provider>
   );
 }
 

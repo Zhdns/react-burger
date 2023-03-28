@@ -1,10 +1,11 @@
     import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, CurrencyIcon, LockIcon, DragIcon, DeleteIcon, ConstructorElement, Button} from '@ya.praktikum/react-developer-burger-ui-components'
-    import React, { useEffect } from 'react'
+    import React, { useEffect, useContext } from 'react'
     import style from './BurgerConstructor.module.css'
     import PropTypes from 'prop-types';
     import OrderDetails from '../OrderDetails/OrderDetails.jsx'
     import { ingredientType } from '../../utils/types.js';
     import Modal from '../Modal/Modal.jsx';
+    import {CartContext} from '../App/App.jsx'
 
 
 
@@ -43,7 +44,7 @@
 
 
 
-    function BurgerConstructor({data}) {
+    function BurgerConstructor({}) {
 
         
         const [bun, setBun] = React.useState([])
@@ -53,23 +54,55 @@
         const [onOpen, setOnOpen] =React.useState(false)
         const [orderNumber, setOrderNumber] = React.useState(1)
 
+        const {cartItems} = useContext(CartContext)
+
 
 
         useEffect(() => {
-            const bun = data.filter(item => item.type === 'bun').slice(0,1)
-            const main = data.filter(item => item.type === 'main')
-            const sauce = data.filter(item => item.type === 'sauce')
-            const totalPrice = [...bun, ...sauce, ...main].reduce((sum, item) => sum + item.price, 0)
+            
+            if(cartItems) { 
+                
+            const bun = cartItems.filter(item => item.type === 'bun').slice(0,1)
+            const main = cartItems.filter(item => item.type === 'main')
+            const sauce = cartItems.filter(item => item.type === 'sauce')
+            const totalPrice = 
+            (bun[0]?.price * 2 || 0) + 
+            main.reduce((sum, item) => sum + item.price, 0) +
+            sauce.reduce((sum, item) => sum + item.price, 0);
             setBun(bun)
             setMain(main)
             setSauce(sauce)
             setTotalPrice(totalPrice)
-    }, [data])
+        }
+    }, [cartItems])
 
 
-    const togglePopup = () => {
-        setOrderNumber(prev => prev + 1)
-        setOnOpen(true)
+
+    async function submitOrder() {
+        const ingredientsIds = [...bun, ...main, ...sauce].map(item => item._id);
+        console.log(ingredientsIds)
+
+        try {
+            const response = await fetch('https://norma.nomoreparties.space/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ingredients: ingredientsIds }),
+        });
+
+        const data = await response.json();
+            
+        if (response.ok) {
+            console.log(data)
+            setOrderNumber(data.order.number);
+            setOnOpen(true);
+            } else {
+            console.error(`Ошибка ${response.status}: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке заказа:', error);
+        }
     }
 
             return (
@@ -122,7 +155,7 @@
                         
                     ))}
                 </Cart>
-                <Total price={totalPrice} onClick={togglePopup}/>
+                <Total price={totalPrice} onClick={submitOrder}/>
                 {onOpen && <Modal  handleClose={()=>setOnOpen(false)}>
                     <OrderDetails orderNumber={orderNumber}/>
                 </Modal>}
@@ -130,8 +163,6 @@
             )
         }
 
-        BurgerConstructor.propTypes = {
-            data: PropTypes.arrayOf(ingredientType),
-        }
+        
 
     export default BurgerConstructor

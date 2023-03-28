@@ -9,7 +9,7 @@
 .ingredients {
     display: flex;
     flex-direction: column;
-    height: 440px;
+    max-height: 440px;
     overflow-y: scroll;
     overflow: overlay;
     gap: 10px;
