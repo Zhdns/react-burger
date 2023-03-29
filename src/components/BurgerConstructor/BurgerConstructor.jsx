@@ -3,9 +3,10 @@
     import style from './BurgerConstructor.module.css'
     import PropTypes from 'prop-types';
     import OrderDetails from '../OrderDetails/OrderDetails.jsx'
-    import { ingredientType } from '../../utils/types.js';
     import Modal from '../Modal/Modal.jsx';
     import {CartContext} from '../App/App.jsx'
+    import { url } from '../../utils/constants.js';
+    import { checkResponse } from '../../utils/utils.js';
 
 
 
@@ -32,7 +33,7 @@
                     <p className='text text_type_digits-medium'>{props.price}</p>
                     <CurrencyIcon type='primary'/>
                 </div>
-                <Button htmlType="button" type="primary" size="medium" onClick={props.onClick}>
+                <Button htmlType="button" type="primary" size="medium" onClick={props.onClick} disabled={props.disabled}>
                     Оформить заказ
                 </Button>
             </div>
@@ -54,8 +55,8 @@
         const [onOpen, setOnOpen] =React.useState(false)
         const [orderNumber, setOrderNumber] = React.useState(1)
 
-        const {cartItems} = useContext(CartContext)
-
+        const {cartItems, clearCart, removeItem} = useContext(CartContext)
+        const bunIsEmpty = bun.length === 0
 
 
         useEffect(() => {
@@ -82,8 +83,7 @@
         const ingredientsIds = [...bun, ...main, ...sauce].map(item => item._id);
         console.log(ingredientsIds)
 
-        try {
-            const response = await fetch('https://norma.nomoreparties.space/api/orders', {
+            const response = await fetch(`${url}/orders`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,16 +93,12 @@
 
         const data = await response.json();
             
-        if (response.ok) {
+        checkResponse(response, () => {
             console.log(data)
             setOrderNumber(data.order.number);
             setOnOpen(true);
-            } else {
-            console.error(`Ошибка ${response.status}: ${data.message}`);
-            }
-        } catch (error) {
-            console.error('Ошибка при отправке заказа:', error);
-        }
+        })
+            clearCart()
     }
 
             return (
@@ -128,7 +124,8 @@
                             key={item._id}
                             text={item.name}
                             price={item.price}
-                            thumbnail={item.image}/>
+                            thumbnail={item.image}
+                            handleClose={()=>removeItem(item.newId)}/>
                             </li>
                         ))}
                         {sauce && sauce.map(item => (
@@ -138,7 +135,8 @@
                             key={item._id}
                             text={item.name}
                             price={item.price}
-                            thumbnail={item.image}/>
+                            thumbnail={item.image}
+                            handleClose={()=>removeItem(item.newId)}/>
                             </li>
                         ))}
                     </Ingredients>
@@ -155,7 +153,7 @@
                         
                     ))}
                 </Cart>
-                <Total price={totalPrice} onClick={submitOrder}/>
+                <Total price={totalPrice} onClick={submitOrder} disabled={bunIsEmpty}/>
                 {onOpen && <Modal  handleClose={()=>setOnOpen(false)}>
                     <OrderDetails orderNumber={orderNumber}/>
                 </Modal>}
