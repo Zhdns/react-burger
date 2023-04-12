@@ -2,72 +2,49 @@ import  Style  from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader.jsx';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor.jsx';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients.jsx';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {useEffect, useCallback } from 'react';
 import { url } from '../../utils/constants.js';
 import { checkResponse } from '../../utils/utils.js';
+import { useDispatch } from 'react-redux';
+import { setData } from '../../services/app-slice';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
-export const CartContext = React.createContext({
-    cartItems: [], 
-    addItem: (item) => {},
-    clearCart: () => {}, 
-    removeItem: (index) => {}
-})
 
 function App() {
 
-  const [data, setData] = useState([]);
-  const [cartItems, setCartItems] = useState([])
-
-  const addItem = (item) => {
-    const newItem = {
-      ...item,
-      newId: `${item._id}-${Date.now()}`
-    }
-    setCartItems((prevItems) => [...prevItems, newItem])
-    console.log(item)
-  }
-
-  const clearCart = () => {
-    setCartItems([])
-  }
+  const dispatch = useDispatch()
   
-  const removeItem = (newId) => { 
-    setCartItems((prevItems) => prevItems.filter((item) => item.newId !== newId))
-  }
   
-  const contextValue = useMemo(() => {
-    return {cartItems, addItem, clearCart, removeItem}
-  }, [cartItems])
-  
-    const fetchData = useCallback (async() => {
+    const fetchData = useCallback (async(dispatch) => {
       
         const response = await fetch(`${url}/ingredients`);
         const result = await response.json();
 
         checkResponse(response, () => {
-          setData(result.data);
+          dispatch(setData(result.data));
         })
-    }, []);
+    }, [dispatch]);
     
     useEffect(() => {
-      fetchData()
-    }, [fetchData])
+      fetchData(dispatch)
+    }, [dispatch, fetchData])
 
     
 
   
 
   return (
-    <CartContext.Provider value={contextValue}>
     <div>
+      <DndProvider backend={HTML5Backend}>
       <AppHeader/>
       <div className={Style.burgerConstructor}>
-        <BurgerIngredients data={data}/>
-        <BurgerConstructor data={data}/>
+        <BurgerIngredients/>
+        <BurgerConstructor/>
       </div>
+      </DndProvider>
     </div>
-    </CartContext.Provider>
   );
 }
 

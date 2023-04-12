@@ -3,9 +3,11 @@ import Modal from '../Modal/Modal.jsx'
 import style from './OrderDetails.module.css'
 import orderConfirmGIF from '../../images/orderConfirm.gif'
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-const OrderDetails = ({orderNumber}) => {
+const OrderDetails = () => {
     
+    const orderNumber = useSelector((state) => state.order.order)
 
     return (
         <div className={style.main}>

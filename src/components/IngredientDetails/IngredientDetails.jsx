@@ -2,10 +2,12 @@ import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon, Currenc
 import React, { useEffect } from 'react'
 import Modal from '../Modal/Modal.jsx'
 import style from './IngredientsDetails.module.css'
-import PropTypes from 'prop-types';
-import { ingredientType } from '../../utils/types.js';
+import { useSelector } from 'react-redux';
 
-const IngredientsDetails = ({ingredient}) => {
+
+const IngredientsDetails = () => {
+
+    const ingredient = useSelector((state) => state.details.details)
 
     if (!ingredient) {
         return null;
@@ -38,10 +40,6 @@ const IngredientsDetails = ({ingredient}) => {
         </div>
     )
 }
-
-IngredientsDetails.propTypes = {
-    ingredient: ingredientType,
-};
 
 
 export default IngredientsDetails
