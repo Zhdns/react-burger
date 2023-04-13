@@ -1,27 +1,13 @@
 import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { url } from "../utils/constants";;
+import { request} from "../utils/utils";
 
 
 export const getData = createAsyncThunk(
     'data/getData', 
-    async(_, { rejectWithValue}) => {
-        try {
-            const response = await fetch(`${url}/ingredients`);
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Ошибка ${response.status}`)
-            }
-
-            return result
-        }
-        catch (error) {
-            console.error('Ошибка', error)
-            return rejectWithValue(error.message)
-        }
+        () => {
+        return request('/ingredients')    
     }
-)
-
+);
 const appSlice = createSlice({
     name: 'app',
     initialState: {

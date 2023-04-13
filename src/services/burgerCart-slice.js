@@ -1,34 +1,21 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue} from "@reduxjs/toolkit";
-import { url } from "../utils/constants";
+import { request } from "../utils/utils";
 
 
 
 export const submitOrder = createAsyncThunk(
     "cart/submitOrder", 
-    async(_, {getState, rejectWithValue}) => {
+    async(_, {getState}) => {
         const {bun, main} = getState().cart.cart
         const ingredientsIds = [...bun, ...main].map((item) => item._id)
-        try {
-        const response = await fetch(`${url}/orders`, {
+        return request('/orders', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ ingredients: ingredientsIds }),
-        });
-
-        if(!response.ok ) { 
-            throw new Error(`Ошибка ${response.status}`)
-        }
-        const data = await response.json()
-        return data
-        }  
-        catch (error) {
-            console.error('Ошибка', error)
-            return rejectWithValue(error.message)
-        }
-    }
-)
+        })
+    })
 
 const buregerCart = createSlice({
     name: 'cart',

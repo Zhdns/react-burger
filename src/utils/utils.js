@@ -1,12 +1,15 @@
-export function checkResponse(response, options) {
-    try {
-    if (response.ok) {
-        options()
-    } else {
-        console.error(`Ошибка ${response.status}:`);
+const BASE_URL = 'https://norma.nomoreparties.space/api'
+
+function checkResponse(res) {
+    if(res.ok) { 
+        return res.json()
     }
-    } catch (error) {
-        console.error('Ошибка при отправке заказа:', error);
+    else {
+        return Promise.reject(`Error: ${res.status}`)
     }
 }
 
+export function request(endpoint, options) {
+    const url = `${BASE_URL}${endpoint}`;
+    return fetch(url, options).then(checkResponse);
+}
