@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 const OrderDetails = () => {
     
-    const orderNumber = useSelector((state) => state.order.order)
+    const orderNumber = useSelector((state) => state.cart.orderNumber)
 
     return (
         <div className={style.main}>
@@ -20,8 +20,5 @@ const OrderDetails = () => {
     )
 }
 
-OrderDetails.propTypes = {
-    orderNumber: PropTypes.number,
-};
 
 export default OrderDetails

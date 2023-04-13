@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const orderConfirmSlice = createSlice({
     name: 'order',
     initialState: { 
-        order: []
+        order: 0,
     }, 
     reducers: { 
         showOrder: (state, action) => {

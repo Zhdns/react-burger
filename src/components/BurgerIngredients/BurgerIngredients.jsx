@@ -114,8 +114,7 @@ function BurgerIngredients() {
                 const sauce = data.filter(item => item.type === 'sauce')
                 setBun(bun)
                 setMain(main)
-                setSauce(sauce)
-                
+                setSauce(sauce)   
     }, [ data])
 
     const handleTabClick = (value, sectionRef) => { 

@@ -6,7 +6,7 @@ import {useEffect, useCallback } from 'react';
 import { url } from '../../utils/constants.js';
 import { checkResponse } from '../../utils/utils.js';
 import { useDispatch } from 'react-redux';
-import { setData } from '../../services/app-slice';
+import { setData, getData } from '../../services/app-slice';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -16,20 +16,9 @@ function App() {
 
   const dispatch = useDispatch()
   
-  
-    const fetchData = useCallback (async(dispatch) => {
-      
-        const response = await fetch(`${url}/ingredients`);
-        const result = await response.json();
-
-        checkResponse(response, () => {
-          dispatch(setData(result.data));
-        })
-    }, [dispatch]);
-    
     useEffect(() => {
-      fetchData(dispatch)
-    }, [dispatch, fetchData])
+      dispatch(getData())
+    }, [dispatch])
 
     
 

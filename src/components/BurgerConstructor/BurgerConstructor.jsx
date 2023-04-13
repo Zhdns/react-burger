@@ -3,11 +3,8 @@
     import style from './BurgerConstructor.module.css'
     import OrderDetails from '../OrderDetails/OrderDetails.jsx'
     import Modal from '../Modal/Modal.jsx';
-    import { url } from '../../utils/constants.js';
-    import { checkResponse } from '../../utils/utils.js';
     import { useDispatch, useSelector } from 'react-redux';
-    import { removeItem, clearCart, addItem, moveItem } from '../../services/burgerCart-slice';
-    import { showOrder } from '../../services/orederConfirm-slice';
+    import { removeItem, addItem, moveItem, submitOrder } from '../../services/burgerCart-slice';
     import {useDrop } from 'react-dnd/dist/hooks/useDrop';
     import { useDrag } from 'react-dnd/dist/hooks/useDrag';
     import { itemTypes } from '../../utils/types';
@@ -110,6 +107,7 @@
         const [onOpen, setOnOpen] =React.useState(false)
         const bunItems = useSelector((state) => state.cart.cart.bun)
         const mainItems = useSelector((state) => state.cart.cart.main)
+        const orederNumber = useSelector((state) => state.cart.orderNumber)
         const dispatch = useDispatch()
         const bunIsEmpty = bun.length === 0
         
@@ -124,7 +122,7 @@
             }
         }, [mainItems])
 
-        //console.log(findId)
+        
 
         const moveIngredient = useCallback((id, atIdex) => {
             const {ingredient, index} = findId(id)
@@ -138,7 +136,7 @@
             
 
             dispatch(moveItem(newCartItems))
-            //console.log(newCartItems)
+            
 
         }, [findId, mainItems])
 
@@ -161,42 +159,24 @@
         }))
 
 
-useEffect(() => {
-    const totalPrice = 
-           (bunItems[0]?.price * 2 || 0) + 
-            mainItems.reduce((sum, item) => sum + item.price, 0)
-            setTotalPrice(totalPrice)
-    if (bunItems) {
-        const bun = bunItems.filter((item) => item.type === "bun").slice(0, 1);
-        setBun(bun);
-    }
-    if (mainItems) {
-        setItems(mainItems);
-    }
-}, [bunItems, mainItems]);
+        useEffect(() => {
+            const totalPrice = 
+                (bunItems[0]?.price * 2 || 0) + 
+                    mainItems.reduce((sum, item) => sum + item.price, 0)
+                    setTotalPrice(totalPrice)
+            if (bunItems) {
+                const bun = bunItems.filter((item) => item.type === "bun").slice(0, 1);
+                setBun(bun);
+            }
+            if (mainItems) {
+                setItems(mainItems);
+            }
+        }, [bunItems, mainItems]);
 
-
-
-
-    async function submitOrder() {
-        const ingredientsIds = [...bunItems,...mainItems].map(item => item._id);
-
-            const response = await fetch(`${url}/orders`, {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ingredients: ingredientsIds }),
-        });
-
-        const data = await response.json();
-            
-        checkResponse(response, () => {
-            dispatch(showOrder(data.order.number));
-            setOnOpen(true);
-        })
-            dispatch(clearCart())
-    }
+        const handleSubmitOrder = () => {
+            dispatch(submitOrder())
+            setOnOpen(true)
+        }
 
             return (
                 <div className={dropZoneClass} ref={add}>
@@ -248,7 +228,7 @@ useEffect(() => {
                     </li>
                     ))}
                 </Cart>
-                <Total price={totalPrice} onClick={submitOrder} disabled={bunIsEmpty}/>
+                <Total price={totalPrice} onClick={handleSubmitOrder} disabled={bunIsEmpty}/>
                 {onOpen && <Modal  handleClose={()=>setOnOpen(false)}>
                     <OrderDetails/>
                 </Modal>}
