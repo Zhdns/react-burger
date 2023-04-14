@@ -3,9 +3,11 @@ import Modal from '../Modal/Modal.jsx'
 import style from './OrderDetails.module.css'
 import orderConfirmGIF from '../../images/orderConfirm.gif'
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-const OrderDetails = ({orderNumber}) => {
+const OrderDetails = () => {
     
+    const orderNumber = useSelector((state) => state.cart.orderNumber)
 
     return (
         <div className={style.main}>
@@ -18,8 +20,5 @@ const OrderDetails = ({orderNumber}) => {
     )
 }
 
-OrderDetails.propTypes = {
-    orderNumber: PropTypes.number,
-};
 
 export default OrderDetails

@@ -9,7 +9,7 @@
 .ingredients {
     display: flex;
     flex-direction: column;
-    height: 440px;
+    max-height: 440px;
     overflow-y: scroll;
     overflow: overlay;
     gap: 10px;
@@ -84,8 +84,41 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    cursor: grab;
 }
 
 .shell {
     margin: 0;
+}
+
+.canDrop {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.constructorElement {
+    padding: 16px 24px;
+    display: inline-block;
+    background: rgba(28, 28, 33, 1);
+    width: 536px;
+    height: 80px;
+    font-family: 'Jet Brains Mono';
+    font-size: 16px;
+    line-height: 24px;
+    color: #F2F2F3;
+    flex-grow: 1;
+    box-sizing: border-box;
+}
+
+.constructorElementTop {
+    border-radius: 88px 88px 40px 40px;
+}
+
+.constructorElementBottom {
+    border-radius: 40px 40px 88px 88px;;
+}
+
+.constructorElementText {
+    margin:14px auto ;
+    text-align: center;
 }
