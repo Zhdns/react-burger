@@ -8,6 +8,8 @@ import { showDetails } from '../../services/ingredientDetails-slice';
 import { useDrag } from 'react-dnd/dist/hooks/index.js';
 import { itemTypes } from '../../utils/types.js';
 import { useInView } from 'react-intersection-observer';
+import {setModal} from '../../services/isLogin'
+import { useNavigate, useParams} from 'react-router-dom';
 
 
 
@@ -102,6 +104,8 @@ function BurgerIngredients() {
     const items = useSelector((state) => state.cart.cart.main)
     const bunItems = useSelector((state) => state.cart.cart.bun)
     const dispatch = useDispatch()
+    const navigate = useNavigate(); 
+
     
     const bunRef = React.useRef()
     const mainRef = React.useRef()
@@ -126,9 +130,17 @@ function BurgerIngredients() {
 
 
     const togglePopup = (ingredient) => {
-        dispatch(showDetails(ingredient))
-        setOnOpen(true)
         
+        dispatch(showDetails(ingredient))
+        dispatch(setModal(true))
+        setOnOpen(true)
+        navigate(`/ingredients/${ingredient._id}`) 
+    }
+
+    const handleClosePopup = () => {
+        dispatch(setModal(false))
+        setOnOpen(false)
+        navigate(`/`)
     }
 
 
@@ -213,7 +225,7 @@ function BurgerIngredients() {
                 ))}
                 </List>
             </ScrollBarBlock>
-            { onOpen && <Modal title={'Детали ингредиента'}  handleClose={()=>setOnOpen(false)}>
+            { onOpen && <Modal title={'Детали ингредиента'}  handleClose={()=>handleClosePopup()}>
                 <IngredientsDetails />
             </Modal>}
         </div>

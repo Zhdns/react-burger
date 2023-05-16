@@ -8,6 +8,8 @@ import appSlice from './services/app-slice';
 import buregerCart from './services/burgerCart-slice';
 import ingredientDetailSlice from './services/ingredientDetails-slice';
 import orderConfirmSlice from './services/orederConfirm-slice';
+import  setLoginStatus  from './services/setLoginPageStatus';
+import isLogin from './services/isLogin';
 
 
 const store = configureStore({
@@ -15,7 +17,9 @@ const store = configureStore({
     app: appSlice.reducer,
     cart: buregerCart.reducer,
     details: ingredientDetailSlice.reducer,
-    order: orderConfirmSlice.reducer
+    order: orderConfirmSlice.reducer,   
+    loginStatus: setLoginStatus.reducer,
+    isLogin: isLogin.reducer,
   }
 })
 

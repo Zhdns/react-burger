@@ -8,6 +8,8 @@
     import {useDrop } from 'react-dnd/dist/hooks/useDrop';
     import { useDrag } from 'react-dnd/dist/hooks/useDrag';
     import { itemTypes } from '../../utils/types';
+    import { Navigate, useNavigate } from 'react-router-dom';
+    
 
 
     function Cart(props){
@@ -34,7 +36,7 @@
                     <CurrencyIcon type='primary'/>
                 </div>
                 <Button htmlType="button" type="primary" size="medium" onClick={props.onClick} disabled={props.disabled}>
-                    Оформить заказ
+                    {props.children}
                 </Button>
             </div>
         )
@@ -110,7 +112,8 @@
         const orederNumber = useSelector((state) => state.cart.orderNumber)
         const dispatch = useDispatch()
         const bunIsEmpty = bun.length === 0
-        
+        const isLogin = useSelector((state) => state.isLogin.isLogin)
+        const navigate = useNavigate()
         
 
         const findId = useCallback((id) => {
@@ -228,7 +231,8 @@
                     </li>
                     ))}
                 </Cart>
-                <Total price={totalPrice} onClick={handleSubmitOrder} disabled={bunIsEmpty}/>
+                {isLogin ?<Total price={totalPrice} onClick={handleSubmitOrder} disabled={bunIsEmpty} children={'Оформить заказ'}/>  : 
+                <Total price={totalPrice} onClick={() => navigate('/login')}  children={'Войти'}/> }
                 {onOpen && <Modal  handleClose={()=>setOnOpen(false)}>
                     <OrderDetails/>
                 </Modal>}
