@@ -3,11 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const ingredientDetailSlice = createSlice({
     name: "IngredientDetail",
     initialState: {
-        details: []
+        id: null
     },
     reducers: {
         showDetails: (state, action) => {
-            state.details = action.payload
+            state.id = action.payload
         }
     }
 })

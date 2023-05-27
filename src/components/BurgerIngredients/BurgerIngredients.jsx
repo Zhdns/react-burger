@@ -9,7 +9,8 @@ import { useDrag } from 'react-dnd/dist/hooks/index.js';
 import { itemTypes } from '../../utils/types.js';
 import { useInView } from 'react-intersection-observer';
 import {setModal} from '../../services/isLogin'
-import { useNavigate, useParams} from 'react-router-dom';
+import { useNavigate, useLocation} from 'react-router-dom';
+
 
 
 
@@ -105,6 +106,7 @@ function BurgerIngredients() {
     const bunItems = useSelector((state) => state.cart.cart.bun)
     const dispatch = useDispatch()
     const navigate = useNavigate(); 
+    const location = useLocation()
 
     
     const bunRef = React.useRef()
@@ -131,10 +133,11 @@ function BurgerIngredients() {
 
     const togglePopup = (ingredient) => {
         
-        dispatch(showDetails(ingredient))
+        dispatch(showDetails(ingredient._id))
+        console.log(ingredient._id)
         dispatch(setModal(true))
         setOnOpen(true)
-        navigate(`/ingredients/${ingredient._id}`) 
+        navigate(`/ingredients/${ingredient._id}`, { state: {background: location}}) 
     }
 
     const handleClosePopup = () => {

@@ -485,7 +485,6 @@ function LoginPage() {
             dispatch(authorization(false));
             navigate('/login');
             
-            
         }).catch(error => {
             console.error(error);
         });
@@ -710,4 +709,3 @@ function LoginPage() {
 
 
 
-export default LoginPage

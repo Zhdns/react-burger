@@ -1,9 +1,14 @@
 import { type } from '@testing-library/user-event/dist/type'
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from './AppHeader.module.css'
 import { NavLink, useLocation } from 'react-router-dom'
-import burger from '../../images/Union.svg'
+import { useDispatch } from 'react-redux'
+import { wsConnecting } from '../../services/middlewareReducer'
+import { wsDisconnected } from '../../services/middlewareReducer'
+
+
+
 
 
 
@@ -24,6 +29,18 @@ function Button(props) {
     const AppHeader = () =>  {
 
         const location = useLocation();
+        const dispatch = useDispatch()
+
+        const connectingToAllOreders = () => {
+            dispatch(wsDisconnected())
+            dispatch(wsConnecting('wss://norma.nomoreparties.space/orders/all'))
+        }
+
+        useEffect(() => {
+            if (!location.pathname.startsWith('/feed') || !location.pathname.startsWith('/profile/orders/')) {
+                dispatch(wsDisconnected())
+            }
+        }, [location.pathname])
     
         return (
             <header className={style.header}>
@@ -31,7 +48,7 @@ function Button(props) {
                         <NavLink to='/' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}> 
                         <BurgerIcon type={location.pathname === '/' ? "primary" : "secondary"}/><span className={`text text_type_main-default`}>Конструктор</span> 
                         </NavLink>
-                        <NavLink to='/feed' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks} type={({isActive}) => isActive ? 'primary'  : "secondary" }> 
+                        <NavLink to='/feed' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks} onClick={() => {connectingToAllOreders()}} > 
                         <ListIcon type={location.pathname.startsWith('/feed') ? "primary" : "secondary"}/> <span className={`text text_type_main-default `}>Лента заказов</span> 
                         </NavLink>
                     </nav>

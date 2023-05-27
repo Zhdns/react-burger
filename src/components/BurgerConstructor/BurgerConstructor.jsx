@@ -4,7 +4,7 @@
     import OrderDetails from '../OrderDetails/OrderDetails.jsx'
     import Modal from '../Modal/Modal.jsx';
     import { useDispatch, useSelector } from 'react-redux';
-    import { removeItem, addItem, moveItem, submitOrder } from '../../services/burgerCart-slice';
+    import { removeItem, addItem, moveItem, submitOrder, emptyCart } from '../../services/burgerCart-slice';
     import {useDrop } from 'react-dnd/dist/hooks/useDrop';
     import { useDrag } from 'react-dnd/dist/hooks/useDrag';
     import { itemTypes } from '../../utils/types';
@@ -176,9 +176,19 @@
             }
         }, [bunItems, mainItems]);
 
-        const handleSubmitOrder = () => {
-            dispatch(submitOrder())
-            setOnOpen(true)
+        // const handleSubmitOrder = () => {
+        //     dispatch(submitOrder())
+        //     setOnOpen(true)
+        // }
+
+        const handleSubmitOrder = async() => {
+            try {
+                dispatch(submitOrder()).unwrap()
+                setOnOpen(true)
+                dispatch(emptyCart())
+            } catch (error) {
+                console.error("Error:", error)
+            }
         }
 
             return (
