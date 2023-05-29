@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue} from "@reduxjs/toolkit";
 import { request } from "../utils/utils";
-import { TOKEN } from "../utils/constants";
+import { TOKEN, ISPENDING } from "../utils/constants";
 
 
 
@@ -66,6 +66,9 @@ const buregerCart = createSlice({
             })
             .addCase(submitOrder.rejected, (state, action) => {
                 console.error("Ошибка при отправке заказа:", action.error.message);
+            })
+            .addCase(submitOrder.pending, (state, action) => {
+                state.orderNumber = ISPENDING
             })
     }    
 })

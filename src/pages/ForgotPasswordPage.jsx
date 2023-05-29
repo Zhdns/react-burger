@@ -1,13 +1,10 @@
-import { EmailInput, Input, ShowIcon, HideIcon, Button } from "@ya.praktikum/react-developer-burger-ui-components"
+import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components"
 import React, { useState, useEffect, useRef } from 'react';
 import './styles.css'
-import { Link, useNavigate, useLocation, NavLink} from "react-router-dom";
-import {  setStatusProfile } from "../services/setLoginPageStatus";
-import { useSelector, useDispatch } from 'react-redux';
-import { LOG_IN, REGISTRATION, FORGOT_PASSWORD, RESET_PASSWORD, PROFILE, TOKEN, REFRESH_TOKEN, PASSWORD, ISLOGIN, USER} from "../utils/constants";
-import { request, LOGIN_URL, REFRESHTOKEN_URL, LOGOUT_URL, REGISTRATION_IRL } from "../utils/utils";
-import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, forgotPassword } from "../services/isLogin";
-import { data } from "../utils/data";
+import { Link, useNavigate} from "react-router-dom";
+import {  useDispatch } from 'react-redux';
+import { forgotPassword } from "../services/isLogin";
+
 
 
 function ForgotPassword(props) {

@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { IDFORMODAL } from "../utils/constants";
 
 const ingredientDetailSlice = createSlice({
     name: "IngredientDetail",
     initialState: {
-        id: null
+        id: localStorage.getItem(IDFORMODAL) || null
     },
     reducers: {
         showDetails: (state, action) => {

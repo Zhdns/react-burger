@@ -7,11 +7,12 @@ import style  from './FeesPage.module.css';
 import { setData } from "../../services/app-slice";
 import { wsConnecting } from "../../services/middlewareReducer";
 import loader from '../../images/loader.gif'
+import { addDetails } from "../../services/orderDetails-slice";
 
 
 function Order(props) {
     return (
-        <div className={style.order}>
+        <div className={style.order}  onClick={() => { props.onClick(props)}}>
             <div className={style.orderInfo}>
                 <p className="text text_type_digits-default">{props.orderId}</p>
                 <p className="text text_type_main-small text_color_inactive">{props.orderDate}</p>
@@ -79,7 +80,7 @@ function OrdersOnProcess(props) {
         return (
             <div>
                 <h2 className="text text_type_main-medium">Выполнено за сегодня::</h2>
-                <p className="text text_type_digits-large">{props.summ}</p>
+                <p className={`text text_type_digits-large`}>{props.summ}</p>
             </div>
         )
     }
@@ -96,6 +97,7 @@ function FeedPage() {
     const connected = useSelector(state => state.webSocket.connected) 
     const [data, setData] = useState([])
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const updateData = useCallback(() => {
         if (connected && orders && orders.orders) {
@@ -120,7 +122,10 @@ function FeedPage() {
         updateData()
     }, [updateData])
 
-
+    const handleClick = (details) => {
+        dispatch(addDetails(details))
+        navigate(`/feed/${details.order._id}`)
+    } 
     
 
     return (
@@ -130,9 +135,9 @@ function FeedPage() {
             <div className={style.feedPage}>
                 <div className={style.feed}>
                 <ScrollBarBlock>
-                {!connected ? 
+                    {!connected ? 
                     (<Loader/>) : 
-                    (data && data.map((order, index) => {
+                    (data && [...data].reverse().map((order, index) => {
                         const uniqueIngredients = Array.from(new Set(order.ingredients))
 
                         const repeatedIngredients = []
@@ -145,7 +150,7 @@ function FeedPage() {
                                 repeatedIngredients.push (
                                     <IngredientPicture key={`${ingredient._id}`} 
                                     img={ingredient.image} 
-                                    style={{ zIndex: -ingredientIndex }}
+                                    style={{ zIndex: 20  - ingredientIndex }}
                                     imageOpacity={{opacity: 0.5}}
                                     count={`+${count}`}/>
                                 )
@@ -153,7 +158,7 @@ function FeedPage() {
                                 singleIngredients.push (
                                     <IngredientPicture key={`${ingredient._id}`} 
                                     img={ingredient.image} 
-                                    style={{ zIndex: -ingredientIndex }}/>
+                                    style={{ zIndex: 20 - ingredientIndex }}/>
                                 )
                             }
                         })
@@ -162,7 +167,7 @@ function FeedPage() {
                         
                         const orderPrice =  order.ingredients.reduce((sum, item) => sum + item.price, 0)
                         const date = order.createdAt && new Date(order.createdAt).toLocaleString();
-
+                        
                         return (
                             <Order 
                                 key={`${order._id}-${index}`} 
@@ -171,9 +176,13 @@ function FeedPage() {
                                 name={order.name} 
                                 price={orderPrice} 
                                 child={ingredients}
-                            />
-                        )
-                    }))}
+                                onClick={() => {
+                                    handleClick({
+                                    order: order,
+                                    date: date,
+                                    orderPrice: orderPrice,
+                                    })
+                                }}/>)}))}
                     </ScrollBarBlock> 
                 </div>
                 <div className={style.screen}>

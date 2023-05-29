@@ -1,20 +1,14 @@
-import  Style  from './App.module.css';
+
 import AppHeader from '../AppHeader/AppHeader.jsx';
-import BurgerConstructor from '../BurgerConstructor/BurgerConstructor.jsx';
-import BurgerIngredients from '../BurgerIngredients/BurgerIngredients.jsx';
 import {useEffect, useCallback } from 'react';
-import { TOKEN, url } from '../../utils/constants.js';
-import { checkResponse } from '../../utils/utils.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { setData, getData } from '../../services/app-slice';
+import { getData } from '../../services/app-slice';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import {Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from '../../pages/HomePage/HomePage'
 import PrivateRoute from '../PrivateRoute';
-import { ISLOGIN } from '../../utils/constants.js';
 import IngredientsDetails from '../IngredientDetails/IngredientDetails';
-import IngerdienPage from '../../pages/IngredientPage/IngradientPage';
 import NoPage from '../../pages/NoPage';
 import RegistrationPage from '../../pages/RegistrationPage';
 import ProfilePage from '../../pages/ProfilePage';
@@ -23,6 +17,7 @@ import ResetPasswordPage from '../../pages/ResetPasswordPage.jsx';
 import LoginPage from '../../pages/LoginPage.jsx';
 import FeedPage from '../../pages/FeedPage/FeedPage';
 import ProfileFeedPage from '../../pages/ProfileFeedPage/ProfileFeedPage';
+import OrderDetailsPage from '../../pages/OrderDetailPage/OrderDetailsPage';
 
 
 
@@ -35,10 +30,8 @@ function App() {
   const dispatch = useDispatch() 
   const isLogin = useSelector((state) => state.isLogin.isLogin);
   const resetPass = useSelector((state) => state.isLogin.resetPasswordState)
-  const isModal = useSelector((state) => state.isLogin.isModal)
   const location = useLocation()
-
-  let background = location.state && location.state.background
+  const background = location.state && location.state.background
 
 
   
@@ -84,10 +77,15 @@ function App() {
               <ProfileFeedPage/>
             </PrivateRoute>
           }/>
-          {/* <Route path='/ingredients/:id' element={isModal ? <HomePage/> : <IngerdienPage/>} /> */}
+          <Route path='/profile/orders/:id' element={
+            <PrivateRoute condition={isLogin} redirectTo='/login'>
+              <OrderDetailsPage/>
+            </PrivateRoute>
+          }/>
           <Route path='/ingredients/:id' element={<IngredientsDetails/>} />
           {background && <Route path='/ingredients/:id' element={<HomePage/>} />}
           <Route path='/feed' element={<FeedPage/>}/>
+          <Route path='/feed/:id' element={<OrderDetailsPage/>}/>
       </Routes>
       {/* </BrowserRouter> */}
       </DndProvider>

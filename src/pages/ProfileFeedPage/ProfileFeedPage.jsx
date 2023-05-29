@@ -8,6 +8,7 @@ import { LOG_IN, REGISTRATION, FORGOT_PASSWORD, RESET_PASSWORD, PROFILE, TOKEN, 
 import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, editProfile } from "../../services/isLogin";
 import { wsConnecting } from "../../services/middlewareReducer";
 import loader from '../../images/loader.gif'
+import { addDetails } from "../../services/orderDetails-slice";
 
 function Nav(props) { 
     return (
@@ -32,8 +33,21 @@ function Nav(props) {
 
 
 function Order(props) {
+    let statusText 
+
+    if(props.status === 'done') {
+        statusText ='Выполнен'
+    } else if (props.status === 'pending') {
+        statusText = 'Готовится'
+    } else if (props.status === 'created') {
+        statusText = 'Создан'
+    } else {
+        statusText = ''
+    }
+
+
     return (
-        <div className={style.order}>
+        <div className={style.order}  onClick={() => { props.onClick(props)}}>
             <div className={style.orderInfo}>
                 <p className="text text_type_digits-default">{props.orderId}</p>
                 <p className="text text_type_main-small text_color_inactive">{props.orderDate}</p>
@@ -41,6 +55,7 @@ function Order(props) {
             <h2 className={`text ${style.orderName} text_type_main-medium`}>
                 {props.name}
             </h2>
+            <h3 className="text text_type_main-default pl-6 mt-4" style={{color: statusText === 'Выполнен' ? 'rgba(0, 204, 204, 1)' : 'white'}}>{statusText}</h3>
             <div className={style.orderInfo}>
                 <div>
                     {props.child}
@@ -83,18 +98,8 @@ function ScrollBarBlock(props) {
     }
 
 function ProfileFeedPage() { 
-    const [email, setEmail] = useState('')
-    const [validEmail, setValidEmail] = useState(true)
-    const emailRef = useRef(null);
-    const [errorEmail, setErrorEmail] = useState('')
-    const [name, setName] = useState('')
     const dispatch = useDispatch()
     const navigate = useNavigate(); 
-    const userName = useSelector((state) => state.isLogin.user.name)
-    const userEmail = useSelector((state) => state.isLogin.user.email)
-    const [newName, setNewName] = useState(false)
-    const [newEmail, setNewEmail] = useState(false) 
-    const user = useSelector((state) => state.isLogin.user)
     const orders = useSelector((state) => state.webSocket.orders)
     const mainData = useSelector((state) => state.app.data)
     const connected = useSelector(state => state.webSocket.connected) 
@@ -145,7 +150,10 @@ function ProfileFeedPage() {
 
     }, [orders, dispatch])
 
-
+    const handleClick = (details) => {
+        dispatch(addDetails(details))
+        navigate(`/profile/orders/${details.order._id}`)
+    } 
 
 
 
@@ -168,7 +176,7 @@ function ProfileFeedPage() {
                                 repeatedIngredients.push (
                                     <IngredientPicture key={`${ingredient._id}`} 
                                     img={ingredient.image} 
-                                    style={{ zIndex: -ingredientIndex }}
+                                    style={{ zIndex: 20 -ingredientIndex }}
                                     imageOpacity={{opacity: 0.5}}
                                     count={`+${count}`}/>
                                 )
@@ -176,7 +184,7 @@ function ProfileFeedPage() {
                                 singleIngredients.push (
                                     <IngredientPicture key={`${ingredient._id}`} 
                                     img={ingredient.image} 
-                                    style={{ zIndex: -ingredientIndex }}/>
+                                    style={{ zIndex: 20 -ingredientIndex }}/>
                                 )
                             }
                         })
@@ -185,7 +193,7 @@ function ProfileFeedPage() {
                         
                         const orderPrice =  order.ingredients.reduce((sum, item) => sum + item.price, 0)
                         const date = order.createdAt && new Date(order.createdAt).toLocaleString();
-
+                        
                         return (
                             <Order 
                                 key={`${order._id}-${index}`} 
@@ -194,6 +202,14 @@ function ProfileFeedPage() {
                                 name={order.name} 
                                 price={orderPrice} 
                                 child={ingredients}
+                                status={order.status}
+                                onClick={() => {
+                                    handleClick({
+                                    order: order,
+                                    date: date,
+                                    orderPrice: orderPrice,
+                                    })
+                                }}
                             />
                         )
                     }))}

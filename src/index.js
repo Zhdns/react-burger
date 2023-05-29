@@ -14,6 +14,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { middleware } from './services/middleware';
 import middlewareReducer from './services/middlewareReducer';
 import listenerMiddleware from './services/middleware';
+import orderDetails from './services/orderDetails-slice';
 
 
 
@@ -26,6 +27,7 @@ const store = configureStore({
     loginStatus: setLoginStatus.reducer,
     isLogin: isLogin.reducer,
     webSocket: middlewareReducer.reducer,
+    orderDetails: orderDetails.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(listenerMiddleware.middleware),

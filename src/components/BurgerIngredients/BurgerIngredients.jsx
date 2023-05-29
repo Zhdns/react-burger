@@ -10,6 +10,7 @@ import { itemTypes } from '../../utils/types.js';
 import { useInView } from 'react-intersection-observer';
 import {setModal} from '../../services/isLogin'
 import { useNavigate, useLocation} from 'react-router-dom';
+import { INGREDIENTMODAL, IDFORMODAL } from '../../utils/constants';
 
 
 
@@ -100,7 +101,7 @@ function BurgerIngredients() {
     const [bun, setBun] = React.useState([]);
     const [main, setMain] = React.useState([]);
     const [sauce, setSauce] = React.useState([]);
-    const [onOpen, setOnOpen] = React.useState(false)
+    const [onOpen, setOnOpen] = React.useState(JSON.parse(localStorage.getItem(INGREDIENTMODAL)) || false)
     const data = useSelector((state) => state.app.data)
     const items = useSelector((state) => state.cart.cart.main)
     const bunItems = useSelector((state) => state.cart.cart.bun)
@@ -131,18 +132,25 @@ function BurgerIngredients() {
     }
 
 
+    useEffect(() => {
+        console.log(onOpen);
+
+        console.log(localStorage.getItem(INGREDIENTMODAL))
+    }, [onOpen]); 
+
     const togglePopup = (ingredient) => {
         
         dispatch(showDetails(ingredient._id))
-        console.log(ingredient._id)
-        dispatch(setModal(true))
+        localStorage.setItem(IDFORMODAL, ingredient._id)
         setOnOpen(true)
+        localStorage.setItem(INGREDIENTMODAL, JSON.stringify(true))
         navigate(`/ingredients/${ingredient._id}`, { state: {background: location}}) 
     }
 
     const handleClosePopup = () => {
-        dispatch(setModal(false))
+        localStorage.setItem(INGREDIENTMODAL, JSON.stringify(false))
         setOnOpen(false)
+        localStorage.removeItem(IDFORMODAL)
         navigate(`/`)
     }
 

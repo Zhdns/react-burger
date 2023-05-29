@@ -64,25 +64,9 @@ function LoginPage() {
     const [validEmail, setValidEmail] = useState(true)
     const emailRef = useRef(null);
     const [errorEmail, setErrorEmail] = useState('')
-    const [name, setName] = useState('')
-    const [validPass, setValidPass] = useState(true)
-    const [validName, setValidName] = useState(true)
-    const [errorPass, setErrorPass] = useState('')
-    const [errorName, setErrorName] = useState('')
-    const [isRegistrationValid, setIsRegistrationValid] = useState(false)
-    const latinLetters =/^[A-Za-z0-9_.]+$/;
-    const [resetPass, setResetPass] = useState('')
-    const [isNewPassValid, setIsNewPassValid] = useState('')
     const dispatch = useDispatch()
-    const status = useSelector((state) => state.loginStatus.status)
-    const navigate = useNavigate();
-    const location = useLocation(); 
-    const userName = useSelector((state) => state.isLogin.user.name)
-    const userEmail = useSelector((state) => state.isLogin.user.email)
-    const [newName, setNewName] = useState(false)
-    const [newEmail, setNewEmail] = useState(false) 
-    const isLogin = useSelector((state) => state.isLogin.isLogin);
-    const isUser = useSelector((state) => state.isLogin.user)
+    const navigate = useNavigate(); 
+
 
 
     const showPass = () => {
