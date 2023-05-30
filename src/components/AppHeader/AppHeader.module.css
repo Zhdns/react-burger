@@ -33,3 +33,27 @@ button:first-child {
 .logo {
     margin: 0 311px 0 118px;
 }
+
+.navLinks {
+    display: flex;
+    color: rgba(133, 133, 173, 1);
+    margin: 0 31px 0 0px;
+    text-decoration: none;
+    align-items: center;
+    gap: 6px;
+    
+
+}
+
+.navLinks:hover {
+    color: rgb(171, 171, 171);
+}
+
+.navLinksActive {
+    display: flex;
+    color: white;
+    margin: 0 31px 0 0px;
+    text-decoration: none;
+    align-items: center;
+    gap: 6px;
+}

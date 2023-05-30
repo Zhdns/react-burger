@@ -29,3 +29,16 @@
     gap: 8px;
     color: rgba(133, 133, 173, 1);
 }
+
+
+.shell { 
+    display: flex;
+    max-width: 640px;
+    margin: 208px auto 0 auto;    
+    flex-direction: column;
+}
+
+.mainTitle {
+    margin: 0 auto;
+    justify-self: center;
+}

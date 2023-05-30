@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue} from "@reduxjs/toolkit";
 import { request } from "../utils/utils";
+import { TOKEN, ISPENDING } from "../utils/constants";
 
 
 
@@ -12,6 +13,7 @@ export const submitOrder = createAsyncThunk(
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": localStorage.getItem(TOKEN)
             },
             body: JSON.stringify({ ingredients: ingredientsIds }),
         })
@@ -46,12 +48,18 @@ const buregerCart = createSlice({
         }, 
         moveItem: (state, action) => {
             state.cart.main = action.payload
+        },
+        emptyCart: (state, action) => {
+            state.cart.bun = [];
+            state.cart.main = []
         }
     },
     extraReducers: (builder) => {
         builder
             .addCase(submitOrder.fulfilled, (state, action) => {
                 const data = action.payload;
+                console.log(data)
+
                 state.orderNumber = data.order.number;
                 state.cart.bun = [];
                 state.cart.main = [];
@@ -59,9 +67,12 @@ const buregerCart = createSlice({
             .addCase(submitOrder.rejected, (state, action) => {
                 console.error("Ошибка при отправке заказа:", action.error.message);
             })
+            .addCase(submitOrder.pending, (state, action) => {
+                state.orderNumber = ISPENDING
+            })
     }    
 })
 
 
-export const {addItem, removeItem, clearCart, moveItem} = buregerCart.actions
+export const {addItem, removeItem, clearCart, moveItem, emptyCart} = buregerCart.actions
 export default buregerCart

@@ -8,6 +8,10 @@ import { showDetails } from '../../services/ingredientDetails-slice';
 import { useDrag } from 'react-dnd/dist/hooks/index.js';
 import { itemTypes } from '../../utils/types.js';
 import { useInView } from 'react-intersection-observer';
+import {setModal} from '../../services/isLogin'
+import { useNavigate, useLocation} from 'react-router-dom';
+import { INGREDIENTMODAL, IDFORMODAL } from '../../utils/constants';
+
 
 
 
@@ -97,11 +101,14 @@ function BurgerIngredients() {
     const [bun, setBun] = React.useState([]);
     const [main, setMain] = React.useState([]);
     const [sauce, setSauce] = React.useState([]);
-    const [onOpen, setOnOpen] = React.useState(false)
+    const [onOpen, setOnOpen] = React.useState(JSON.parse(localStorage.getItem(INGREDIENTMODAL)) || false)
     const data = useSelector((state) => state.app.data)
     const items = useSelector((state) => state.cart.cart.main)
     const bunItems = useSelector((state) => state.cart.cart.bun)
     const dispatch = useDispatch()
+    const navigate = useNavigate(); 
+    const location = useLocation()
+
     
     const bunRef = React.useRef()
     const mainRef = React.useRef()
@@ -125,10 +132,26 @@ function BurgerIngredients() {
     }
 
 
+    useEffect(() => {
+        console.log(onOpen);
+
+        console.log(localStorage.getItem(INGREDIENTMODAL))
+    }, [onOpen]); 
+
     const togglePopup = (ingredient) => {
-        dispatch(showDetails(ingredient))
-        setOnOpen(true)
         
+        dispatch(showDetails(ingredient._id))
+        localStorage.setItem(IDFORMODAL, ingredient._id)
+        setOnOpen(true)
+        localStorage.setItem(INGREDIENTMODAL, JSON.stringify(true))
+        navigate(`/ingredients/${ingredient._id}`, { state: {background: location}}) 
+    }
+
+    const handleClosePopup = () => {
+        localStorage.setItem(INGREDIENTMODAL, JSON.stringify(false))
+        setOnOpen(false)
+        localStorage.removeItem(IDFORMODAL)
+        navigate(`/`)
     }
 
 
@@ -213,7 +236,7 @@ function BurgerIngredients() {
                 ))}
                 </List>
             </ScrollBarBlock>
-            { onOpen && <Modal title={'Детали ингредиента'}  handleClose={()=>setOnOpen(false)}>
+            { onOpen && <Modal title={'Детали ингредиента'}  handleClose={()=>handleClosePopup()}>
                 <IngredientsDetails />
             </Modal>}
         </div>

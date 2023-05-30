@@ -1,0 +1,174 @@
+.main {
+    position: relative;
+    margin: 0;
+}
+
+.feedPage { 
+    display: grid;
+    grid-template-columns: 595px 584px;
+    gap: 60px;
+}
+
+.feed {
+    max-height: 840px;
+    width: 846px;
+    position: relative;
+    margin: 40px auto 0;
+    right: -200px;
+}
+
+.order {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 830px;
+    min-height: 214px;
+    max-height: 300px;
+    background-color: rgba(28, 28, 33, 1);
+    border-radius: 40px;
+    margin: 2px 8px 16px 0;
+}
+
+.orderInfo { 
+    display: flex;
+    justify-content: space-between;
+    padding: 24px;
+}
+
+.ingredientPictureMain {
+    display: inline-flex;
+    position: relative;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    border: 3px solid rgba(76, 76, 255, 1);
+    margin-right: -15px;
+    background-color: rgba(28, 28, 33, 1);
+}
+
+.ingredientPicture {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    /* border: 3px solid rgba(76, 76, 255, 1); */
+    object-fit: cover;
+    margin-right: -15px;
+    background-color: rgba(28, 28, 33, 1);
+}
+
+.count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 53px;
+    height: 53px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: transparent;
+    left: 3px;
+    top: 3px;
+}
+
+
+.scrollBar {
+    position: relative;
+    height: 790px;
+    /* width: 860px; */
+    margin: auto;
+    overflow-y: scroll;
+}
+
+.scrollBar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+    background-color: rgba(133, 133, 173, 1);
+    
+}
+
+.scrollBar::-webkit-scrollbar-track {
+    background-color: rgba(47, 47, 55, 1);
+}
+
+.orderName { 
+    padding: 0 0 0 24px ;
+}
+
+.orderPrice {
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+    align-items: center;
+}
+.price {
+    margin: 0;
+}
+
+.orpderOnProcess {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 280px;
+    height: 210px;
+}
+
+.orpderOnProcessTitle { 
+    margin: 0;
+}
+
+.processList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0;
+}
+
+.numberDone {
+    color: rgba(0, 204, 204, 1);
+    list-style-type: none;
+    justify-self: flex-start;
+    padding: 0;
+}
+
+.processScreen {
+    display: flex;
+    flex-direction: row;
+    gap: 66px;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.navProfile {
+    position: absolute;
+    left: -392px;
+    top: 170px;
+    max-width: 320px;
+}
+
+.subProfile {
+    position: absolute;
+    top: 430px;
+    left: -392px;
+    max-width: 320px;
+    color:rgba(133, 133, 173, 1);
+    ;
+}
+
+.loader {
+    position: absolute;
+    top: 330px;
+    left: 430px;
+    width: 70px;
+    height: 70px;
+}
+
+
+
