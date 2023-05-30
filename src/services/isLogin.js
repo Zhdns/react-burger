@@ -91,6 +91,19 @@ export const resetPassword = createAsyncThunk(
     }
 )
 
+export const updateToken = createAsyncThunk(
+    'isLOgin/updateToken', 
+    async(token) => {
+        return request('/auth/token', {
+            method: 'POST',
+            headers : {
+                "Content-type": 'application/json'
+            },
+            body : JSON.stringify(token)
+        })
+    }
+)
+
 const isLogin = createSlice({
     name: 'isLogin',
     initialState: {
@@ -98,6 +111,7 @@ const isLogin = createSlice({
         user: JSON.parse(localStorage.getItem(USER)) || { name: '', email: '' },
         resetPasswordState: false,
         isModal: false,
+        error: ''
     }, 
     reducers: {
         authorization: (state, action) => {
@@ -196,6 +210,19 @@ const isLogin = createSlice({
                 state.isLogin = true
             })
             .addCase(login.rejected, (state, action) => {
+                console.log(action.error.message)
+            })
+
+            .addCase(updateToken.fulfilled, (state, action) => {
+                const data = action.payload.response
+                const token = data.accessToken;
+                const refreshToken = data.refreshToken;
+                localStorage.setItem(TOKEN, token)
+                localStorage.setItem(REFRESH_TOKEN, refreshToken)
+                localStorage.setItem(ISLOGIN, true)
+                state.isLogin = true
+            })
+            .addCase(updateToken.rejected, (state, action) => {
                 console.error("Error:", action.error.message)
             })
     }   

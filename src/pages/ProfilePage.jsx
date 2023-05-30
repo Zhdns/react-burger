@@ -6,9 +6,10 @@ import {  setStatusProfile } from "../services/setLoginPageStatus";
 import { useSelector, useDispatch } from 'react-redux';
 import { LOG_IN, REGISTRATION, FORGOT_PASSWORD, RESET_PASSWORD, PROFILE, TOKEN, REFRESH_TOKEN, PASSWORD, ISLOGIN, USER} from "../utils/constants";
 import { request, LOGIN_URL, REFRESHTOKEN_URL, LOGOUT_URL, REGISTRATION_IRL } from "../utils/utils";
-import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, editProfile } from "../services/isLogin";
+import { updateToken, setUserEmail, setUserName, logout, editProfile } from "../services/isLogin";
 import { data } from "../utils/data";
 import { wsConnecting, wsDisconnected } from "../services/middlewareReducer";
+import { checkAccess } from "../utils/utils";
 
 function Profile(props) { 
     return (
@@ -93,6 +94,7 @@ function ProfilePage() {
     const [newName, setNewName] = useState(false)
     const [newEmail, setNewEmail] = useState(false) 
     const user = useSelector((state) => state.isLogin.user)
+    const serverError = useSelector((state) => state.isLogin.error)
 
     useEffect(() => {
         if (emailRef.current && emailRef.current.validity.valid) {
@@ -133,7 +135,14 @@ function ProfilePage() {
         }
 
         try {
-            await dispatch(editProfile(bodyData)).unwrap()
+            await dispatch(editProfile(bodyData))
+            checkAccess(serverError, async() => {
+                const token = {
+                    token: localStorage.getItem(REFRESH_TOKEN)
+                }
+                await dispatch(updateToken(token)).unwrap()
+                dispatch(editProfile(bodyData))
+            })
             setNewName(false)
             setNewEmail(false)
             setName(user.name)
@@ -148,7 +157,14 @@ function ProfilePage() {
             token = token.replace('Bearer ', '')
             let url = `wss://norma.nomoreparties.space/orders?token=${token}`
             dispatch(wsConnecting(url))
-            console.log(url)
+            checkAccess(serverError, async() => {
+                const token = {
+                    token: localStorage.getItem(REFRESH_TOKEN)
+                }
+                await dispatch(updateToken(token)).unwrap()
+                dispatch(wsDisconnected())
+                dispatch(wsConnecting(url))
+            })
     }
 
 
