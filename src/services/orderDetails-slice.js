@@ -1,23 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ORDERID } from "../utils/constants";
 
 
 const orderDetails = createSlice({
     name: 'orderDetails',
     initialState: {
-        order: {},
-        date: '',
-        orderPrice: '', 
+        id: localStorage.getItem(ORDERID) || null
     },
     reducers: {
         addDetails: (state, action) => {
-            state.order = action.payload.order;
-            state.date = action.payload.date;
-            state.orderPrice = action.payload.orderPrice;
-        }
+            state.id = action.payload
+        },
     }
 })
 
-export const {addDetails} = orderDetails.actions
+export const {addDetails, addOrders} = orderDetails.actions
 export default orderDetails
 
 

@@ -18,7 +18,9 @@ const OrderDetails = () => {
         <div className={style.main}>
         <h1 className={orderNumber === ISPENDING ? isPending : isDone}>{String(orderNumber).padStart(6, '0')}</h1>
         <h2 className={style.title}>{orderNumber === ISPENDING ? 'Ожидайте' : 'Идентификатор заказа'}</h2>
-        <img className={style.img} src={orderNumber === ISPENDING ? loader : orderConfirmGIF} alt="confirmaton"/>
+        {orderNumber === ISPENDING ?  
+        <img className={style.imgWaiting} src={loader} alt="loader"/> :
+        <img className={style.img} src={orderConfirmGIF} alt="confirmaton"/>}
         <span className='text text_type_main-small'>{orderNumber === ISPENDING ? 'Ваш заказ начали готовить' : 'Ваш заказ готов'}</span>
         <span className={`${style.span} text text_type_main-small`}>{orderNumber === ISPENDING ? 'Дождитесь готовности на орбитальной станции' : 'Заберите заказ на орбитальной станции'}</span>
     </div>

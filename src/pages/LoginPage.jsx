@@ -4,9 +4,9 @@ import './styles.css'
 import { Link, useNavigate, useLocation, NavLink} from "react-router-dom";
 import {  setStatusProfile } from "../services/setLoginPageStatus";
 import { useSelector, useDispatch } from 'react-redux';
-import { LOG_IN, REGISTRATION, FORGOT_PASSWORD, RESET_PASSWORD, PROFILE, TOKEN, REFRESH_TOKEN, PASSWORD, ISLOGIN, USER} from "../utils/constants";
-import { request, LOGIN_URL, REFRESHTOKEN_URL, LOGOUT_URL, REGISTRATION_IRL } from "../utils/utils";
-import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, login } from "../services/isLogin";
+import {REFRESH_TOKEN} from "../utils/constants";
+import { checkAccess, } from "../utils/utils";
+import {  login, updateToken} from "../services/isLogin";
 
 function Login(props) {
     return (
@@ -64,6 +64,7 @@ function LoginPage() {
     const [validEmail, setValidEmail] = useState(true)
     const emailRef = useRef(null);
     const [errorEmail, setErrorEmail] = useState('')
+    const serverError = useSelector((state) => state.isLogin.error)
     const dispatch = useDispatch()
     const navigate = useNavigate(); 
 
@@ -90,8 +91,7 @@ function LoginPage() {
             'password': password,
         };
         try {
-            await dispatch(login(bodyData)).unwrap()
-            navigate('/');
+            await dispatch(login(bodyData))
         } catch (error) {
             console.error("Error:", error)
         }

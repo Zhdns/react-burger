@@ -2,10 +2,11 @@ import { type } from '@testing-library/user-event/dist/type'
 import {Icons, Logo, Box, Typography, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components'
 import React, { useEffect } from 'react'
 import style from './AppHeader.module.css'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { wsConnecting } from '../../services/middlewareReducer'
 import { wsDisconnected } from '../../services/middlewareReducer'
+import { TOKEN } from '../../utils/constants'
 
 
 
@@ -30,6 +31,7 @@ function Button(props) {
 
         const location = useLocation();
         const dispatch = useDispatch()
+        const navigate = useNavigate() 
 
         const connectingToAllOreders = () => {
             dispatch(wsDisconnected())
@@ -39,6 +41,21 @@ function Button(props) {
         useEffect(() => {
             if (!location.pathname.startsWith('/feed') || !location.pathname.startsWith('/profile/orders/')) {
                 dispatch(wsDisconnected())
+            }
+        }, [location.pathname])
+
+        useEffect (() => {
+            if (location.pathname.startsWith('/feed')) {
+                dispatch(wsConnecting('wss://norma.nomoreparties.space/orders/all'))
+            }
+        }, [location.pathname])
+
+        useEffect(() => {
+            if (location.pathname.startsWith('/profile/orders/')) {
+                let token = localStorage.getItem(TOKEN)
+                token = token.replace('Bearer ', '')
+                const url = `wss://norma.nomoreparties.space/orders?token=${token}`
+                dispatch(wsConnecting(url))
             }
         }, [location.pathname])
     
@@ -52,7 +69,7 @@ function Button(props) {
                         <ListIcon type={location.pathname.startsWith('/feed') ? "primary" : "secondary"}/> <span className={`text text_type_main-default `}>Лента заказов</span> 
                         </NavLink>
                     </nav>
-                    <div className={style.logo}>
+                    <div className={style.logo} onClick={() => navigate('/')}>
                         <Logo/>
                     </div>
                     <NavLink to='/profile' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}>

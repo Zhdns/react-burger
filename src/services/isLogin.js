@@ -91,6 +91,20 @@ export const resetPassword = createAsyncThunk(
     }
 )
 
+export const updateToken = createAsyncThunk(
+    'isLOgin/updateToken', 
+    async() => {
+        // console.log(`Thunk: ${token}`)
+        return request('/auth/token', {
+            method: 'POST',
+            headers : {
+                "Content-type": 'application/json'
+            },
+            body : JSON.stringify(`'token': ${localStorage.getItem(REFRESH_TOKEN)}`)
+        })
+    }
+)
+
 const isLogin = createSlice({
     name: 'isLogin',
     initialState: {
@@ -98,6 +112,7 @@ const isLogin = createSlice({
         user: JSON.parse(localStorage.getItem(USER)) || { name: '', email: '' },
         resetPasswordState: false,
         isModal: false,
+        error: ''
     }, 
     reducers: {
         authorization: (state, action) => {
@@ -117,6 +132,9 @@ const isLogin = createSlice({
         },
         setModal: (state, action ) => {
             state.isModal = action.payload
+        },
+        setError: (state, action) => {
+            state.error = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -163,7 +181,7 @@ const isLogin = createSlice({
                 console.log(data)
             })
             .addCase(editProfile.rejected, (state, action) => {
-                console.error("Error:", action.error.message)
+                state.error = action.error.message
             })
             
             .addCase(forgotPassword.fulfilled, (state, action) => {
@@ -183,6 +201,7 @@ const isLogin = createSlice({
 
             .addCase(login.fulfilled, (state, action) => {
                 const data = action.payload.response
+                console.log(data)
                 const password = action.payload.password;
                 const token = data.accessToken;
                 const refreshToken = data.refreshToken;
@@ -192,15 +211,32 @@ const isLogin = createSlice({
                 localStorage.setItem(REFRESH_TOKEN, refreshToken)
                 localStorage.setItem(PASSWORD, password)
                 localStorage.setItem(ISLOGIN, true)
+                localStorage.setItem(USER, JSON.stringify(user))
                 state.user = user
                 state.isLogin = true
             })
             .addCase(login.rejected, (state, action) => {
+                console.log(action.error.message)
+                state.error = action.error.message
+            })
+
+            .addCase(updateToken.fulfilled, (state, action) => {
+                const data = action.payload
+                console.log(data)
+                const token = data.accessToken;
+                const refreshToken = data.refreshToken;
+                localStorage.setItem(TOKEN, token)
+                localStorage.setItem(REFRESH_TOKEN, refreshToken)
+                localStorage.setItem(ISLOGIN, true)
+                state.isLogin = true
+            })
+            .addCase(updateToken.rejected, (state, action) => {
                 console.error("Error:", action.error.message)
+                console.log('update token error')
             })
     }   
 }) 
 
-export const {authorization, setUser, resetPasswordAction, setUserName, setUserEmail, setModal} = isLogin.actions
+export const {authorization, setUser, resetPasswordAction, setUserName, setUserEmail, setModal, setError} = isLogin.actions
 export default isLogin
 

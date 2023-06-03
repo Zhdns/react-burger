@@ -12,10 +12,8 @@ const IngredientsDetails = () => {
     const idModal = useSelector((state) => state.details.id)
     const location = useLocation()
     const {id} = useParams()
-    
-
     const ingredient = useSelector((state) => state.app.data.find(ing => ing._id === (idModal || id)))
-
+    console.log(`params: ${id}, ingredient: ${ingredient}, modal: ${idModal}`)
     let background = location.state && location.state.background
 
     

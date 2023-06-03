@@ -9,6 +9,9 @@
     import { useDrag } from 'react-dnd/dist/hooks/useDrag';
     import { itemTypes } from '../../utils/types';
     import { Navigate, useNavigate } from 'react-router-dom';
+    import { updateToken } from '../../services/isLogin';
+    import { checkAccess } from '../../utils/utils';
+    import { REFRESH_TOKEN } from '../../utils/constants';
     
 
 
@@ -109,11 +112,11 @@
         const [onOpen, setOnOpen] =React.useState(false)
         const bunItems = useSelector((state) => state.cart.cart.bun)
         const mainItems = useSelector((state) => state.cart.cart.main)
-        const orederNumber = useSelector((state) => state.cart.orderNumber)
         const dispatch = useDispatch()
         const bunIsEmpty = bun.length === 0
         const isLogin = useSelector((state) => state.isLogin.isLogin)
         const navigate = useNavigate()
+        const serverError = useSelector((state) => state.isLogin.error)
         
 
         const findId = useCallback((id) => {
@@ -183,7 +186,15 @@
 
         const handleSubmitOrder = async() => {
             try {
-                dispatch(submitOrder()).unwrap()
+                dispatch(submitOrder())
+                checkAccess(serverError, async() => {
+                    const token = {
+                        token: localStorage.getItem(REFRESH_TOKEN)
+                    }
+                    await dispatch(updateToken(token)).unwrap()
+                    dispatch(submitOrder())
+                })
+                console.log(serverError)
                 setOnOpen(true)
                 dispatch(emptyCart())
             } catch (error) {

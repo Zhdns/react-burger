@@ -132,11 +132,6 @@ function BurgerIngredients() {
     }
 
 
-    useEffect(() => {
-        console.log(onOpen);
-
-        console.log(localStorage.getItem(INGREDIENTMODAL))
-    }, [onOpen]); 
 
     const togglePopup = (ingredient) => {
         
