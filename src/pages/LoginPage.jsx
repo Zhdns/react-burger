@@ -92,14 +92,6 @@ function LoginPage() {
         };
         try {
             await dispatch(login(bodyData))
-            checkAccess(serverError, async() => {
-                const token = {
-                    token: localStorage.getItem(REFRESH_TOKEN)
-                }
-                await dispatch(updateToken(token)).unwrap()
-                dispatch(login(bodyData))
-            })
-            navigate('/');
         } catch (error) {
             console.error("Error:", error)
         }

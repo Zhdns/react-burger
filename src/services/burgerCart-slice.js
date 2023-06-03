@@ -1,23 +1,29 @@
 import { createSlice, createAsyncThunk, isRejectedWithValue} from "@reduxjs/toolkit";
 import { request } from "../utils/utils";
 import { TOKEN, ISPENDING } from "../utils/constants";
+import { setError } from "./isLogin";
 
 
 
 export const submitOrder = createAsyncThunk(
     "cart/submitOrder", 
-    async(_, {getState}) => {
-        const {bun, main} = getState().cart.cart
-        const ingredientsIds = [...bun, ...main].map((item) => item._id)
-        return request('/orders', {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-                "Authorization": localStorage.getItem(TOKEN)
-            },
-            body: JSON.stringify({ ingredients: ingredientsIds }),
-        })
-    })
+    async(_, {getState, rejectWithValue}) => {
+        try {
+            const {bun, main} = getState().cart.cart
+            const ingredientsIds = [...bun, ...bun,  ...main].map((item) => item._id)
+            return await request('/orders', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": localStorage.getItem(TOKEN)
+                },
+                body: JSON.stringify({ ingredients: ingredientsIds }),
+            });
+        } catch (err) {
+            return rejectWithValue(err);
+        }
+    }
+);
 
 const buregerCart = createSlice({
     name: 'cart',
@@ -26,7 +32,8 @@ const buregerCart = createSlice({
         cart: {
             bun: [],
             main: [],
-        }
+        }, 
+        error: ''
     }, 
     reducers: {
         addItem: (state, action) => { 
@@ -65,7 +72,8 @@ const buregerCart = createSlice({
                 state.cart.main = [];
             })
             .addCase(submitOrder.rejected, (state, action) => {
-                console.error("Ошибка при отправке заказа:", action.error.message);
+                state.error = action.error.message
+                console.log('aaa')
             })
             .addCase(submitOrder.pending, (state, action) => {
                 state.orderNumber = ISPENDING

@@ -1,5 +1,7 @@
+
 const BASE_URL = 'https://norma.nomoreparties.space/api'
-const ERROR401 = 'Error: 401'
+const ERROR403 = 'Error: 403'
+
 
 
 function checkResponse(res) {
@@ -7,7 +9,8 @@ function checkResponse(res) {
         return res.json()
     }
     else {
-        return Promise.reject(`Error: ${res.status}`)
+        throw { status: res.status, message: `Error: ${res.status}` };
+        // Promise.reject(`Error: ${res.status}`)
     }
 }
 
@@ -18,9 +21,10 @@ export function request(endpoint, options) {
 
 
 export function checkAccess (error, action) {
-    if (error === ERROR401) {
+    if (error === ERROR403) {
         return action()
     } else {
-        console.log("Get access")
+        console.log(`Get access: ${error}`)
+        
     }
 }

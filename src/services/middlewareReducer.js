@@ -16,11 +16,10 @@ const middlewareReducer = createSlice({
     },
     wsDisconnected: (state) => {
         state.connected = false;
-        state.orders = []
+        //state.orders = []
     },
     wsOnMessage: (state, action) => {
-        state.orders = action.payload;
-        
+            state.orders = action.payload;        
     },
     },
 });

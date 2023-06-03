@@ -5,9 +5,13 @@ import {  setStatusProfile } from "../../services/setLoginPageStatus";
 import { useSelector, useDispatch} from 'react-redux';
 import style  from './FeesPage.module.css';
 import { setData } from "../../services/app-slice";
-import { wsConnecting } from "../../services/middlewareReducer";
+import { wsConnecting, wsDisconnected } from "../../services/middlewareReducer";
 import loader from '../../images/loader.gif'
-import { addDetails } from "../../services/orderDetails-slice";
+import { addDetails, addOrders } from "../../services/orderDetails-slice";
+import Modal from "../../components/Modal/Modal";
+import OrderDetailsPage from "../OrderDetailPage/OrderDetailsPage";
+import { ORDERID, ORDERMODAL } from "../../utils/constants";
+
 
 
 function Order(props) {
@@ -98,18 +102,30 @@ function FeedPage() {
     const [data, setData] = useState([])
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [isOpen, setIsOpen] = useState(JSON.parse(localStorage.getItem(ORDERMODAL)) || false)
+    const location = useLocation()
 
     const updateData = useCallback(() => {
         if (connected && orders && orders.orders) {
-            const newData = orders.orders.map(order => {
-                const ingredients = order.ingredients.map(ingredient => {
-                    return mainData.find(item => item._id === ingredient)
-                })
+            // const newData = orders.orders.map(order => {
+            //     const ingredients = order.ingredients.map(ingredient => {
+            //         return mainData.find(item => item._id === ingredient)
+            //     })
     
-                return {
+            //     return {
+            //         ...order,
+            //         ingredients,
+            //     }
+            // })
+            const newData = orders.orders.map(order => {
+                const ingredients = order.ingredients
+                    .map(ingredient => mainData.find(item => item._id === ingredient))
+                    .filter(Boolean);  
+                
+                    return {
                     ...order,
                     ingredients,
-                }
+                };
             })
             setData(newData)
         }
@@ -124,8 +140,18 @@ function FeedPage() {
 
     const handleClick = (details) => {
         dispatch(addDetails(details))
-        navigate(`/feed/${details.order._id}`)
+        localStorage.setItem(ORDERID, details)
+        localStorage.setItem(ORDERMODAL, JSON.stringify(true))
+        setIsOpen(true)
+        navigate(`/feed/${details}`, { state: {background: location}})
     } 
+
+    const handleClose = () => {
+        localStorage.removeItem(ORDERID)
+        localStorage.setItem(ORDERMODAL, JSON.stringify(false))
+        navigate(`/feed`)
+        setIsOpen(false)
+    }
     
 
     return (
@@ -137,7 +163,7 @@ function FeedPage() {
                 <ScrollBarBlock>
                     {!connected ? 
                     (<Loader/>) : 
-                    (data && [...data].reverse().map((order, index) => {
+                    (data && data.map((order, index) => {
                         const uniqueIngredients = Array.from(new Set(order.ingredients))
 
                         const repeatedIngredients = []
@@ -177,11 +203,7 @@ function FeedPage() {
                                 price={orderPrice} 
                                 child={ingredients}
                                 onClick={() => {
-                                    handleClick({
-                                    order: order,
-                                    date: date,
-                                    orderPrice: orderPrice,
-                                    })
+                                    handleClick(order._id)
                                 }}/>)}))}
                     </ScrollBarBlock> 
                 </div>
@@ -218,6 +240,9 @@ function FeedPage() {
                     summ={orders.totalToday}/>
                 </div>
             </div>
+            {isOpen && <Modal handleClose={()=>handleClose()}>
+                <OrderDetailsPage/>
+            </Modal>}
         </div>
     )
 

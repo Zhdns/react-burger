@@ -86,6 +86,7 @@ function App() {
           {background && <Route path='/ingredients/:id' element={<HomePage/>} />}
           <Route path='/feed' element={<FeedPage/>}/>
           <Route path='/feed/:id' element={<OrderDetailsPage/>}/>
+          {background && <Route path='/feed/:id' element={<FeedPage/>} />}
       </Routes>
       {/* </BrowserRouter> */}
       </DndProvider>

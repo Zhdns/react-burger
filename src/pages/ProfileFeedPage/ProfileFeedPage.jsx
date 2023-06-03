@@ -4,11 +4,14 @@ import '../styles.css'
 import style from './ProfileFeedPage.module.css'
 import { Link, useNavigate, useLocation, NavLink} from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import { LOG_IN, REGISTRATION, FORGOT_PASSWORD, RESET_PASSWORD, PROFILE, TOKEN, REFRESH_TOKEN, PASSWORD, ISLOGIN, USER} from "../../utils/constants";
-import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, editProfile } from "../../services/isLogin";
+import {TOKEN, REFRESH_TOKEN, ORDERID, ORDERMODAL} from "../../utils/constants";
+import { authorization, setUser, resetPasswordAction, setUserEmail, setUserName, logout, editProfile, updateToken } from "../../services/isLogin";
 import { wsConnecting } from "../../services/middlewareReducer";
 import loader from '../../images/loader.gif'
 import { addDetails } from "../../services/orderDetails-slice";
+import Modal from "../../components/Modal/Modal";
+import OrderDetailsPage from "../OrderDetailPage/OrderDetailsPage";
+
 
 function Nav(props) { 
     return (
@@ -104,6 +107,8 @@ function ProfileFeedPage() {
     const mainData = useSelector((state) => state.app.data)
     const connected = useSelector(state => state.webSocket.connected) 
     const [data, setData] = useState([])
+    const [isOpen, setIsOpen] = useState(JSON.parse(localStorage.getItem(ORDERMODAL)) || false)
+    const location = useLocation()
 
 
 
@@ -125,22 +130,37 @@ function ProfileFeedPage() {
 
     useEffect(() => {
         if (connected) {
-            const newData = orders.orders.map(order => {
-                const ingredients = order.ingredients.map(ingredient => {
-                    return mainData.find(item => item._id === ingredient)
-                })
+            // const newData = orders.orders.map(order => {
+            //     const ingredients = order.ingredients.map(ingredient => {
+            //         return mainData.find(item => item._id === ingredient)
+            //     })
     
-                return {
+            //     return {
+            //         ...order,
+            //         ingredients,
+            //     }
+            // })
+            // const refreshToken = localStorage.getItem(REFRESH_TOKEN)
+            // dispatch(updateToken(refreshToken))
+            const newData = orders && orders.orders.map(order => {
+                const ingredients = order.ingredients
+                    .map(ingredient => mainData.find(item => item._id === ingredient))
+                    .filter(Boolean);  
+                
+                    return {
                     ...order,
                     ingredients,
-                }
+                };
             })
-            const testData = newData.slice(0, 1)
+
             setData(newData)
-            // console.log(newData)
-            //console.log(data)
         }
         else {
+            // const refreshToken = {
+            //     token: localStorage.getItem(REFRESH_TOKEN)
+            // }
+            // console.log(refreshToken)
+            // dispatch(updateToken(refreshToken))
             let token = localStorage.getItem(TOKEN)
             token = token.replace('Bearer ', '')
             let url = `wss://norma.nomoreparties.space/orders?token=${token}`
@@ -148,12 +168,27 @@ function ProfileFeedPage() {
         }
         
 
-    }, [orders, dispatch])
+    }, [orders])
 
     const handleClick = (details) => {
         dispatch(addDetails(details))
-        navigate(`/profile/orders/${details.order._id}`)
+        localStorage.setItem(ORDERID, details)
+        localStorage.setItem(ORDERMODAL, JSON.stringify(true))
+        setIsOpen(true)
+        navigate(`/profile/orders/${details}`, { state: {background: location}})
     } 
+
+    const handleClose = () => {
+        localStorage.removeItem(ORDERID)
+        localStorage.setItem(ORDERMODAL, JSON.stringify(false))
+        navigate(`/profile/orders`)
+        let token = localStorage.getItem(TOKEN)
+        token = token.replace('Bearer ', '')
+        const url = `wss://norma.nomoreparties.space/orders?token=${token}`
+        dispatch(wsConnecting(url))
+        setIsOpen(false)
+    }
+    
 
 
 
@@ -204,11 +239,7 @@ function ProfileFeedPage() {
                                 child={ingredients}
                                 status={order.status}
                                 onClick={() => {
-                                    handleClick({
-                                    order: order,
-                                    date: date,
-                                    orderPrice: orderPrice,
-                                    })
+                                    handleClick(order._id)
                                 }}
                             />
                         )
@@ -216,7 +247,9 @@ function ProfileFeedPage() {
                     </ScrollBarBlock> 
                     <Nav logout={() => handleSubmit()}/>
                 </div>
-                
+                {isOpen && <Modal handleClose={()=>handleClose()}>
+                <OrderDetailsPage/>
+                    </Modal>}
         </div>
     )
 }

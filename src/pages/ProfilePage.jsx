@@ -11,6 +11,8 @@ import { data } from "../utils/data";
 import { wsConnecting, wsDisconnected } from "../services/middlewareReducer";
 import { checkAccess } from "../utils/utils";
 
+
+
 function Profile(props) { 
     return (
     <div >
@@ -95,6 +97,7 @@ function ProfilePage() {
     const [newEmail, setNewEmail] = useState(false) 
     const user = useSelector((state) => state.isLogin.user)
     const serverError = useSelector((state) => state.isLogin.error)
+    
 
     useEffect(() => {
         if (emailRef.current && emailRef.current.validity.valid) {
@@ -153,18 +156,19 @@ function ProfilePage() {
     }
     const connectingToUserOrders = () => {
             dispatch(wsDisconnected())
+            // dispatch(updateToken())
             let token = localStorage.getItem(TOKEN)
             token = token.replace('Bearer ', '')
-            let url = `wss://norma.nomoreparties.space/orders?token=${token}`
+            const url = `wss://norma.nomoreparties.space/orders?token=${token}`
             dispatch(wsConnecting(url))
-            checkAccess(serverError, async() => {
-                const token = {
-                    token: localStorage.getItem(REFRESH_TOKEN)
-                }
-                await dispatch(updateToken(token)).unwrap()
-                dispatch(wsDisconnected())
-                dispatch(wsConnecting(url))
-            })
+            // checkAccess(serverError, async() => {
+            //     const token = {
+            //         token: localStorage.getItem(REFRESH_TOKEN)
+            //     }
+            //     await dispatch(updateToken(token)).unwrap()
+            //     dispatch(wsDisconnected())
+            //     dispatch(wsConnecting(url))
+            // })
     }
 
 

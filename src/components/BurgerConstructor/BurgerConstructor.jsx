@@ -194,6 +194,7 @@
                     await dispatch(updateToken(token)).unwrap()
                     dispatch(submitOrder())
                 })
+                console.log(serverError)
                 setOnOpen(true)
                 dispatch(emptyCart())
             } catch (error) {

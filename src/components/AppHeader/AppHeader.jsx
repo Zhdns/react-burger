@@ -6,6 +6,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { wsConnecting } from '../../services/middlewareReducer'
 import { wsDisconnected } from '../../services/middlewareReducer'
+import { TOKEN } from '../../utils/constants'
 
 
 
@@ -40,6 +41,21 @@ function Button(props) {
         useEffect(() => {
             if (!location.pathname.startsWith('/feed') || !location.pathname.startsWith('/profile/orders/')) {
                 dispatch(wsDisconnected())
+            }
+        }, [location.pathname])
+
+        useEffect (() => {
+            if (location.pathname.startsWith('/feed')) {
+                dispatch(wsConnecting('wss://norma.nomoreparties.space/orders/all'))
+            }
+        }, [location.pathname])
+
+        useEffect(() => {
+            if (location.pathname.startsWith('/profile/orders/')) {
+                let token = localStorage.getItem(TOKEN)
+                token = token.replace('Bearer ', '')
+                const url = `wss://norma.nomoreparties.space/orders?token=${token}`
+                dispatch(wsConnecting(url))
             }
         }, [location.pathname])
     

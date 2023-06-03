@@ -1,9 +1,9 @@
 .shell {
     width: 640px;
-    height: 620px;
+    max-height: 620px;
     display: flex;
     flex-direction: column;
-    margin: 122px auto;
+    margin: 0 auto 60px;
 }
 
 
@@ -16,10 +16,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    height: 790px;
+    max-height: 790px;
     width: 640px;
     margin: 24px auto 40px;
-    overflow-y: scroll;
+    overflow-y: auto
 }
 
 .scrollBar::-webkit-scrollbar {
@@ -77,4 +77,11 @@
     justify-content: space-between;
 }
 
+.loader {
+    width: 60px;
+    height: 60px;
+    margin-top: 180px;
+    justify-self: center;
+    align-self: center;
+}
 
