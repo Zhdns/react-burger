@@ -31,3 +31,5 @@ export interface IngredientGlobalType {
     image_large: string;
     __v: number;
 }
+
+
