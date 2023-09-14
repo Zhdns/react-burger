@@ -15,24 +15,24 @@ const AppHeader = (): ReactElement  =>  {
     const navigate = useNavigate()
 
     const connectingToAllOreders = () => {
-        dispatch(wsDisconnected(null))
+        dispatch(wsDisconnected())
         dispatch(wsConnecting('wss://norma.nomoreparties.space/orders/all'))
     }
 
     useEffect(() => {
-        if (!pathname.startsWith('/react-burger/feed') || !pathname.startsWith('/react-burger/profile/orders/')) {
-            dispatch(wsDisconnected(null))
+        if (!pathname.startsWith('/feed') || !pathname.startsWith('/profile/orders/')) {
+            dispatch(wsDisconnected())
         }
     }, [pathname, dispatch])
 
     useEffect (() => {
-        if (pathname.startsWith('/react-burger/feed')) {
+        if (pathname.startsWith('/feed')) {
             dispatch(wsConnecting('wss://norma.nomoreparties.space/orders/all'))
         }
     }, [pathname, dispatch])
 
     useEffect(() => {
-        if (pathname.startsWith('/react-burger/profile/orders/')) {
+        if (pathname.startsWith('/profile/orders/')) {
             let token: string | null = localStorage.getItem(TOKEN)
             if (token === null) {
                 console.log('localStorege.token is empty = null')
@@ -47,19 +47,19 @@ const AppHeader = (): ReactElement  =>  {
     return (
         <header className={style.header}>
                 <nav className={style.nav}>
-                    <NavLink to='/react-burger/' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}> 
-                    <BurgerIcon type={location.pathname === '/react-burger/' ? "primary" : "secondary"}/><span className={`text text_type_main-default`}>Конструктор</span> 
+                    <NavLink to='/' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}> 
+                    <BurgerIcon type={location.pathname === '/' ? "primary" : "secondary"}/><span className={`text text_type_main-default`}>Конструктор</span> 
                     </NavLink>
-                    <NavLink to='react-burger/feed' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks} onClick={() => {connectingToAllOreders()}} > 
-                    <ListIcon type={location.pathname.startsWith('/react-burger/feed') ? "primary" : "secondary"}/> <span className={`text text_type_main-default `}>Лента заказов</span> 
+                    <NavLink to='/feed' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks} onClick={() => {connectingToAllOreders()}} > 
+                    <ListIcon type={location.pathname.startsWith('/feed') ? "primary" : "secondary"}/> <span className={`text text_type_main-default `}>Лента заказов</span> 
                     </NavLink>
                 </nav>
-                <div className={style.logo} onClick={() =>  navigate('/react-burger')}>
+                <div className={style.logo} onClick={() =>  navigate('/')}>
                     <Logo/>
                 </div>
-                <NavLink to='/react-burger/profile' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}>
-                    <ProfileIcon type={location.pathname === '/react-burger/' || location.pathname.startsWith('/react-burger/ingredients/') || location.pathname.startsWith('/react-burger/feed') ?
-                    "secondary" : "primary"}/><span className={ location.pathname === '/' || location.pathname.startsWith('/react-burger/ingredients/') || location.pathname.startsWith('/react-burger/feed') ? 
+                <NavLink to='/profile' className={({isActive}) => isActive ? style.navLinksActive  : style.navLinks}>
+                    <ProfileIcon type={location.pathname === '/' || location.pathname.startsWith('/ingredients/') || location.pathname.startsWith('/feed') ?
+                    "secondary" : "primary"}/><span className={ location.pathname === '/' || location.pathname.startsWith('/ingredients/') || location.pathname.startsWith('/feed') ? 
                     `text text_type_main-default ${style.navLinks}` : `text text_type_main-default ${style.navLinksActive}`}>Личный кабинет </span>
                     </NavLink>  
         </header>

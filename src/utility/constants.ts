@@ -14,3 +14,7 @@ export const INGREDIENTMODAL = 'ingredient_modal'
 export const ORDERMODAL = 'order_modal'
 export const IDFORMODAL = 'id_for_modal'
 export const ORDERID = 'order_id'
+export const itemTypes = {
+    INGREDIENT: 'ingredient',
+    MAIN: 'main'
+}

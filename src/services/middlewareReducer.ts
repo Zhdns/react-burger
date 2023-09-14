@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, Action } from "@reduxjs/toolkit";
 import { MultipleReceivedOrders} from "../utility/types";
 
 
@@ -29,7 +29,7 @@ const middlewareReducer = createSlice({
     wsConnected: (state, action: PayloadAction<any>) => {
         state.connected = true;
     },
-    wsDisconnected: (state, action: PayloadAction<any>) => {
+    wsDisconnected: (state, action: Action) => {
         state.connected = false;
         //state.orders = []
     },

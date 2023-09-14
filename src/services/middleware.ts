@@ -35,12 +35,12 @@ listenerMiddleware.startListening({
 
     socket.onclose = (event: CloseEvent) => {
     //console.log('Socket closed', event);
-    listenerApi.dispatch(wsDisconnected(action.payload));
+    listenerApi.dispatch(wsDisconnected());
     };
 
     socket.onerror = (error: Event) => {
     console.error('WebSocket error: ', error);
-    listenerApi.dispatch(wsDisconnected(action.payload));
+    listenerApi.dispatch(wsDisconnected());
     };
 },
 });

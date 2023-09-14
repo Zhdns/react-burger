@@ -17,6 +17,10 @@ export type ProductType = {
     count: number;
     image: string;
     alt: string;
+    calories: number;
+    proteins: number;
+    fat: number;
+    carbohydrates: number;
     price: number;
     name: string;
 }
@@ -24,4 +28,26 @@ export type ProductType = {
 export const itemTypes = {
     INGREDIENT: 'ingredient',
     MAIN: 'main'
+}
+
+export type RootState = {
+    app: {
+        data: IngredientGlobalType[];
+    };
+    cart: { 
+        cart:{ 
+            main: IngredientGlobalType[];
+            bun: IngredientGlobalType[];
+        };
+    }
+
+}
+
+export type AppState = {
+    app: {
+        data: {
+            succses: boolean;
+            data: IngredientGlobalType[]
+        }
+    }
 }
