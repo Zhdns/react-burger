@@ -8,8 +8,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import appSlice from './services/appSlice';
 import buregerCart from './services/burgerCart-slice';
 import ingredientDetailSlice from './services/ingredientDetails-slice';
-// import orderConfirmSlice from './services/orederConfirm-slice';
-// import  setLoginStatus  from './services/setLoginPageStatus';
 import isLogin from './services/isLogin';
 import { BrowserRouter } from 'react-router-dom';
 import middlewareReducer from './services/middlewareReducer';
